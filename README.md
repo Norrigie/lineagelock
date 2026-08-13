@@ -80,6 +80,16 @@ Corrections to the data are the most useful thing. Ace levels, encounter rates a
 cross-checked against multiple sources, but 465 battles and 1,128 locations is a lot of numbers —
 if you find one that's wrong in play, please open an issue saying which game and which battle.
 
+## Support
+
+Lineagelock is free, complete and unrestricted — there is no paid tier, nothing is gated, and
+there never will be. If it made a playthrough more fun and you feel like saying thanks:
+
+[☕ **Buy me a coffee**](https://ko-fi.com/norrigie)
+
+Entirely optional, and it buys you nothing except my gratitude. Corrections to the data are
+worth more than money anyway — see *Contributing* above.
+
 ## Licence and credits
 
 [CC BY-SA 4.0](LICENSE). See [CREDITS.md](CREDITS.md) for the data sources and their licences.

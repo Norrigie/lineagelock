@@ -299,6 +299,11 @@
 
   footer{text-align:center;color:#5c6879;font-size:12px;padding:26px 0 0;line-height:1.7}
   footer a{color:#5c6879}
+  /* Tip link: legible, but quieter than anything that affects the run. */
+  .kofi{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:5px 12px;
+    border:1px solid var(--line);border-radius:99px;color:var(--dim);text-decoration:none;
+    font-size:12px;font-weight:700}
+  .kofi:hover{color:var(--gold);border-color:var(--gold)}
   .fabbar{position:fixed;left:0;right:0;bottom:0;z-index:50;
     padding:12px 16px calc(12px + env(safe-area-inset-bottom));
     background:linear-gradient(transparent,rgba(14,17,23,.96) 42%);
@@ -335,6 +340,10 @@
   Names from <a href="https://www.behindthename.com" target="_blank" rel="noopener">Behind the Name</a>
   (<a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>) ·
   portraits from <a href="https://sprites.pmdcollab.org/" target="_blank" rel="noopener">PMD Sprite Collab</a>
+  <br>
+  <a class="kofi" href="https://ko-fi.com/norrigie" target="_blank" rel="noopener">
+    ☕ Buy me a coffee</a>
+  <div style="margin-top:6px">Lineagelock is free and always will be — tips just say thanks.</div>
 </footer>
 
 <div class="fabbar"><button class="btn" id="catchBtn"></button></div>

@@ -30,6 +30,18 @@ project and are requested from their repository when a card is drawn — they ar
 this project. Individual spriters are credited per-Pokémon on their site. If the images can't be
 reached, the tracker falls back to letter placeholders.
 
+## On donations and NonCommercial
+
+The tracker links to a Ko-fi page. That link is a voluntary tip jar and nothing more: the
+project is given away in full, no feature is withheld, no donor gets anything a non-donor
+doesn't, and there is no advertising.
+
+This matters because **PMD Sprite Collab's portraits are CC BY-NC 4.0** — NonCommercial. The
+NonCommercial term restricts use "primarily intended for or directed toward commercial advantage
+or private monetary compensation". Giving a tool away for free and accepting unsolicited thanks
+is not that. Should this project ever charge for anything, gate a feature, or run ads, the
+portraits would have to go before that happened.
+
 ## Deliberately not included
 
 **Pokémon Decay's artwork.** The 560 icons belong to the game's developers. They are not in this
