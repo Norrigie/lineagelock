@@ -643,7 +643,7 @@ function blankRun(name, seed){
     game:null, beat:{}, custom:[], mode:null, encMode:null, lastArea:'',
     areas:{}, customAreas:[], levelCap:false, succession:'choose', cap:'',
     tourDie:6, blood:false, bloodType:{}, shinyClause:false, starter:'full',
-    mlock:false, methods:{} };
+    mlock:false, methods:{}, capOK:{}, capFix:{} };
 }
 function fixRun(d, i){
   d.id = d.id || uid();
@@ -662,6 +662,7 @@ function fixRun(d, i){
   d.shinyClause = !!d.shinyClause;
   d.starter = ['full','half','trad'].includes(d.starter) ? d.starter : 'full';
   d.mlock = !!d.mlock; d.methods = d.methods || {};
+  d.capOK = d.capOK || {}; d.capFix = d.capFix || {};
   return d;
 }
 
@@ -888,9 +889,28 @@ function gauntletName(){
   return `${g.list[g.a][0]} → ${g.list[g.z][0]}`;
 }
 
+// A wall is either a single battle or a whole Rule 37 chain; either way it gets one cap and
+// one confirmation. Keying the chain by its bounds means correcting it overrides the block,
+// not just the member you happened to be standing in front of.
+function wallKey(){
+  const g = gauntlet();
+  if (g) return 'g' + g.a + '-' + g.z;
+  const nx = nextMajor();
+  return nx ? 'b' + nx.i : null;
+}
+function wallName(){
+  const g = gauntlet();
+  if (g) return gauntletName();
+  const nx = nextMajor();
+  return nx ? nx.b[0] : '';
+}
+const capConfirmed = () => { const k = wallKey(); return !k || !!S.capOK[k]; };
+
 function capNum(){ const n = parseInt(S.cap, 10); return isFinite(n) && n > 0 ? n : null; }
 // Ace levels ship with most games (scraped from Serebii); Decay's come from its dev sheet.
 function knownAce(){
+  const k = wallKey();
+  if (k && S.capFix[k] != null) return S.capFix[k];   // you told us; we believe you
   const g = gauntletAce();                 // one cap for the whole gauntlet: its highest ace
   if (g) return g;
   const nx = nextMajor();
@@ -911,6 +931,61 @@ function overCap(){
   if (inGauntlet()) return [];
   return party().filter(m => parseInt(m.level, 10) > c);
 }
+// Fired once per wall from postBattleFlow. Yes locks the shipped number in; No takes yours.
+function confirmCap(){
+  const k = wallKey();
+  if (!k){ closeSheet(); return; }
+  const lv = knownAce();
+  if (lv == null) return askCap();          // nothing on file at all — just ask for the number
+  sheet(`<h3>📏 Cap for ${esc(wallName())}</h3>
+    <p class="note" style="margin:0 0 4px">Next up is <b>${esc(wallName())}</b>, and we have that
+      ace at <b>Lv ${lv}</b>${gauntlet() ? ' — the highest in the whole run, since it counts as one wall (Rule 37)' : ''}.</p>
+    <div style="text-align:center;font-size:44px;font-weight:900;color:var(--gold);
+      line-height:1.1;margin:10px 0">Lv ${lv}</div>
+    <p class="note" style="margin:0 0 12px">Is that right? Answer once and it is remembered for
+      the rest of the run.</p>
+    <div class="acts">
+      <button class="btn" onclick="acceptCap()">✓ Yes, Lv ${lv}</button>
+    </div>
+    <div class="acts">
+      <button class="btn ghost" onclick="correctCap()">✎ No — the real level is…</button>
+    </div>`);
+}
+function acceptCap(){
+  const k = wallKey();
+  if (!k) return closeSheet();
+  S.capOK[k] = true;
+  S.cap = String(knownAce());
+  logIt('📏', `Cap <b>Lv ${S.cap}</b> for <b>${esc(wallName())}</b>, confirmed. Won't ask again.`);
+  save(); render(); closeSheet();
+  if (discharged().length) rotateGate();
+}
+function correctCap(){
+  const lv = knownAce();
+  sheet(`<h3>📏 ${esc(wallName())}'s real ace level</h3>
+    <p class="note" style="margin:0 0 10px">We had <b>Lv ${lv == null ? '—' : lv}</b>. What is it
+      actually? This overrides the bundled figure for the rest of the run.</p>
+    <label for="capIn">Ace level</label>
+    <input type="number" id="capIn" min="1" max="100" inputmode="numeric" value="${esc(lv || '')}">
+    <div class="acts">
+      <button class="btn ghost" onclick="confirmCap()">← Back</button>
+      <button class="btn" onclick="saveCapFix()">Save</button>
+    </div>`);
+  setTimeout(()=>{ const el = document.getElementById('capIn'); if (el){ el.focus(); el.select(); } }, 120);
+}
+function saveCapFix(){
+  const k = wallKey();
+  const v = parseInt((document.getElementById('capIn') || {}).value, 10);
+  if (!k || !isFinite(v) || v < 1 || v > 100) return;
+  S.capFix[k] = v;
+  S.capOK[k] = true;
+  S.cap = String(v);
+  logIt('📏', `Cap corrected to <b>Lv ${v}</b> for <b>${esc(wallName())}</b> — the bundled figure
+    was wrong. Won't ask again.`);
+  save(); render(); closeSheet();
+  if (discharged().length) rotateGate();
+}
+
 function askCap(){
   const nx = nextMajor();
   const g = gauntlet();
@@ -935,8 +1010,12 @@ function askCap(){
 }
 function setCap(){
   const v = document.getElementById('capIn').value.trim();
+  const lv = parseInt(v, 10);
   S.cap = v;
-  logIt('📏', `Level cap set to <b>Lv ${esc(v)}</b>${nextMajor()?` for ${esc(nextMajor().b[0])}`:''}.`);
+  // Remember it against this wall, so a game with no bundled ace levels is asked once too.
+  const k = wallKey();
+  if (k && isFinite(lv) && lv > 0){ S.capFix[k] = lv; S.capOK[k] = true; }
+  logIt('📏', `Level cap set to <b>Lv ${esc(v)}</b>${wallName()?` for ${esc(wallName())}`:''}. Won't ask again.`);
   save(); render(); closeSheet();
   if (overCap().length) rotateGate();
 }
@@ -1239,18 +1318,18 @@ function viewParty(){
         owed ? '⚠ rotate first' : '✓ Beat it'}</button>
       <div class="ngo">›</div></div>`;
   }
+  // No standing cap button — the cap is confirmed once per wall after the major that brings it
+  // into range, and shown on the NEXT MAJOR line. This only speaks up when something is wrong,
+  // because an over-cap Pokémon with no heir wouldn't surface anywhere else.
   if (S.levelCap){
     const oc = overCap();
-    const gnt = inGauntlet();
-    h += `<div class="nextup ${oc.length?'warn':''}" onclick="askCap()">
-      <div class="nlabel">CAP</div>
-      <div class="nname">${capNum() ? 'Lv ' + capNum() : 'not set'}<span>${
-        gnt ? 'suspended — you\'re inside ' + esc(gauntletName()) + ' (Rule 37)'
-        : oc.length ? esc(oc.map(m=>m.nick).join(', ')) + ' over the cap'
-        : gauntlet() ? 'one cap for all of ' + esc(gauntletName())
-        : 'tap to set the next major\'s ace level'}</span></div>
-      <div class="ngo">›</div></div>`;
-
+    if (oc.length) h += `<div class="nextup warn">
+      <div class="nlabel">OVER</div>
+      <div class="nname">${esc(oc.map(m=>`${m.nick} Lv ${m.level}`).join(', '))}<span>past the
+        Lv ${capNum()} cap — ${oc.some(m=>hasHeir(m))
+          ? 'hand the chair over at the next PC (Rule 29)'
+          : 'no heir in that lineage, so it sits out until the cap rises'}</span></div>
+      </div>`;
   }
   // Debts pile up invisibly inside the gauntlet, so show what's waiting.
   if (inGauntlet()){
@@ -1771,16 +1850,12 @@ function postBattleFlow(){
   if (needsTour().length) return openTourRolls();
   if (capPending && S.levelCap){
     capPending = false;
-    if (syncCap()){                       // the next wall's ace is on file — no need to ask
-      const nx = nextMajor();
-      logIt('📏', gauntlet()
-        ? `Cap <b>Lv ${S.cap}</b> for all of <b>${esc(gauntletName())}</b> — one wall, no PC in between.`
-        : `Cap now <b>Lv ${S.cap}</b> for <b>${esc(nx.b[0])}</b>.`);
-      save(); render();
-      if (overCap().length) return rotateGate();
-      closeSheet(); return;
-    }
-    return askCap();
+    if (!nextMajor()){ closeSheet(); return; }        // run's over, nothing left to cap
+    if (!capConfirmed()) return confirmCap();         // ask once per wall, then never again
+    if (syncCap()) logIt('📏', `Cap now <b>Lv ${S.cap}</b> for <b>${esc(wallName())}</b>.`);
+    save(); render();
+    if (overCap().length) return rotateGate();
+    closeSheet(); return;
   }
   closeSheet();
 }
