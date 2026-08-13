@@ -2378,7 +2378,37 @@ async function rollName(){
       btn.title = 'That theme needs an API key — rolled from the bundled pool instead.';
   }
   inp.value = name;
+  inp.dataset.rolled = name;          // so a later gender change knows it may re-roll
   btn.textContent = '🎲';
+  showNameNote(name, g);
+}
+
+// A surprising name is usually correct rather than broken — Papa is feminine, it's the Maori
+// earth goddess — so name the pool it was drawn from and link to the entry.
+function showNameNote(name, g){
+  const box = document.getElementById('nickNote');
+  if (!box) return;
+  if (!name){ box.innerHTML = ''; return; }
+  const where = g === 'm' ? 'masculine + unisex'
+              : g === 'f' ? 'feminine + unisex'
+              : g === 'n' ? 'the whole theme (genderless)'
+              : null;
+  const slug = String(name).toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  const link = `<a href="https://www.behindthename.com/name/${slug}" target="_blank"
+    rel="noopener" style="color:var(--dim)">check ${esc(name)} ›</a>`;
+  box.innerHTML = where
+    ? `<span style="color:var(--dim)">drawn from <b>${where}</b> · ${link}</span>`
+    : `<span style="color:var(--gold)">no gender set yet — drawn from every name in the theme.
+       Set the gender and the die re-rolls.</span>`;
+}
+// Re-roll only if the box still holds exactly what the die gave, so typed names are never lost.
+function genderChanged(){
+  const inp = document.getElementById('fNick');
+  refreshAbility();
+  if (!inp) return;
+  const rolled = inp.dataset.rolled || '';
+  if (rolled && inp.value.trim() === rolled) rollName();
+  else if (!inp.value.trim()) showNameNote('', '');
 }
 
 /* ---------- backup ---------- */
@@ -2575,7 +2605,7 @@ function catchForm(opts){
       value="${esc(o.species||'')}" autocomplete="off" oninput="previewPortrait();refreshAbility()">`}
     <div class="two">
       <div><label for="fGender">Gender</label>
-        <select id="fGender">
+        <select id="fGender" onchange="genderChanged()">
           <option value="">Unknown</option>
           <option value="m">♂ Male</option>
           <option value="f">♀ Female</option>
@@ -2584,11 +2614,12 @@ function catchForm(opts){
       <div><label for="fAbility">Ability</label>
         <div id="abilBox">${abilityField(o.species?dexOf(o.species):0,'')}</div></div>
     </div>
-    <label for="fNick">Nickname — ${ti} ${esc(tl)} <span style="text-transform:none;letter-spacing:0">(🎲 matches the gender)</span></label>
+    <label for="fNick">Nickname — ${ti} ${esc(tl)} <span style="text-transform:none;letter-spacing:0">(🎲 matches the gender — set that first)</span></label>
     <div class="inline">
       <input type="text" id="fNick" placeholder="or type your own" autocomplete="off">
       <button id="nameBtn" onclick="rollName()" title="Roll a themed name">🎲</button>
     </div>
+    <div id="nickNote" style="font-size:11.5px;line-height:1.4;margin-top:4px"></div>
     <select id="fTheme" style="margin-top:8px" onchange="S.theme=this.value;save();rollName()">
       ${themeOptions(S.theme)}</select>
     <div class="two">
