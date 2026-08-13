@@ -127,6 +127,11 @@
   .nextup .nname{flex:1;min-width:0;font-weight:800;font-size:15.5px}
   .nextup .nname span{display:block;font-weight:600;font-size:12.5px;color:var(--dim)}
   .nextup .ngo{color:var(--dim);font-size:20px}
+  /* Beat the next wall without leaving this tab. */
+  .nextup .beat{background:var(--gold);color:#1a1206;border:0;border-radius:9px;font:inherit;
+    font-size:12.5px;font-weight:900;padding:7px 12px;cursor:pointer;white-space:nowrap}
+  .nextup .beat:active{filter:brightness(.9)}
+  .nextup .beat.locked{background:var(--card2);color:var(--dim)}
   .chip.term{color:#9fd0ff;background:#152b44;top:auto;bottom:9px;right:auto;left:9px}
   .chip.roll{color:#ffd479;background:#3a2e14;top:auto;bottom:9px;right:auto;left:9px}
   .nextup.roll{border-left-color:#ffd479}
@@ -330,7 +335,7 @@
       <button class="cog" onclick="openSettings()" title="Settings">⚙</button>
     </div>
     <nav>
-      <button data-tab="party" class="on">Party<span class="n" id="cParty">0</span></button>
+      <button data-tab="party" class="on">Overview<span class="n" id="cParty">0</span></button>
       <button data-tab="box">Box<span class="n" id="cBox">0</span></button>
       <button data-tab="progress">Progress<span class="n" id="cBattles">0</span></button>
       <button data-tab="log">Log<span class="n" id="cLog">0</span></button>
@@ -1210,14 +1215,30 @@ function nextMajor(){
   return null;
 }
 
+// Beating the next wall from the Overview tab. Everything downstream — tours, the faint
+// question, the cap, Rule 37's chains — is toggleBattle's job, so this just finds the index.
+function beatNext(){
+  const nx = nextMajor();
+  if (!nx) return;
+  toggleBattle(nx.i);
+}
+
 function viewParty(){
   let h = '';
   const nx = nextMajor();
-  if (nx) h += `<div class="nextup" onclick="tab='progress';pane='battles';render()">
+  if (nx){
+    // Rules 26–27 come first: if somebody owes a handover, toggleBattle refuses anyway, so say
+    // so on the button rather than letting it look broken.
+    const owed = discharged().length || needsTour().length;
+    h += `<div class="nextup" onclick="tab='progress';pane='battles';render()">
       <div class="nlabel">NEXT MAJOR</div>
       <div class="nname">${esc(nx.b[0])}<span>${esc(nx.b[1]||'')}${nx.b[2]?' · '+esc(nx.b[2]):''}${
         nx.b[4]?` · Ace Level ${nx.b[4]}`:''}</span></div>
+      <button class="beat ${owed?'locked':''}" onclick="event.stopPropagation();beatNext()"
+        title="${owed?'Sort the rotation out first':'Mark this major as beaten'}">${
+        owed ? '⚠ rotate first' : '✓ Beat it'}</button>
       <div class="ngo">›</div></div>`;
+  }
   if (S.levelCap){
     const oc = overCap();
     const gnt = inGauntlet();
