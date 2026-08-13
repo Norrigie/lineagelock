@@ -1,0 +1,38 @@
+Lineagelock — a Pokémon challenge ruleset and its companion tracker
+
+Copyright (c) 2026 the Lineagelock authors
+
+This work is licensed under the Creative Commons Attribution-ShareAlike 4.0
+International License (CC BY-SA 4.0).
+
+    You are free to:
+      Share  — copy and redistribute the material in any medium or format
+      Adapt  — remix, transform, and build upon the material for any purpose,
+               even commercially
+
+    Under the following terms:
+      Attribution — you must give appropriate credit, provide a link to the
+                    licence, and indicate if changes were made.
+      ShareAlike  — if you remix, transform, or build upon the material, you
+                    must distribute your contributions under the same licence
+                    as the original.
+
+Full legal code: https://creativecommons.org/licenses/by-sa/4.0/legalcode
+Human-readable summary: https://creativecommons.org/licenses/by-sa/4.0/
+
+WHY SHARE-ALIKE
+---------------
+The tracker bundles nickname theme data from Behind the Name
+(https://www.behindthename.com), which is published under CC BY-SA 4.0. That
+licence is share-alike and the data is baked into the single HTML file, so the
+whole work carries the same terms. See CREDITS.md.
+
+NOT COVERED BY THIS LICENCE
+---------------------------
+  * Pokémon portraits from the PMD Sprite Collab project, which the tracker
+    requests at runtime and does not redistribute. Those remain the work of
+    their individual spriters.
+  * Pokémon Decay's artwork, which belongs to that game's developers and is
+    deliberately absent from this repository.
+  * Pokémon itself, which is © Nintendo / Creatures Inc. / GAME FREAK. This
+    project is unofficial and unaffiliated.
