@@ -2966,6 +2966,8 @@ function commit(n){
             number but can never take the chair — it's boxed off the succession (Rule 33).</p>`}
      </div>
      ${m.nature?`<div style="margin-top:12px">${statStrip(m.nature)}</div>`:''}
+     ${m.where ? '' : `<div class="acts"><button class="btn ghost" onclick="askWhere(${m.id})">
+       📍 Add where you caught it</button></div>`}
      <div class="acts"><button class="btn" onclick="afterCatch(${m.id})">${
        !occupied && bloodOn() && !house ? '🧬 Found the lineage'
        : !occupied && tours() ? '📜 Roll its tour' : 'Got it'}</button></div>`;
@@ -3099,7 +3101,9 @@ function openDetail(id){
       <dt>Nature</dt><dd>${m.nature
         ? esc(m.nature)+' <span style="color:var(--dim)">'+natureShort(m.nature)+'</span>'
         : '<span style="color:var(--dim)">not recorded</span>'}</dd>
-      <dt>Caught</dt><dd>${m.where?esc(m.where)+' · ':''}${new Date(m.caughtAt).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})}</dd>
+      <dt>Caught</dt><dd>${m.where ? esc(m.where)+' · '
+        : '<span style="color:var(--gold)">location not set</span> · '}${
+        new Date(m.caughtAt).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})}</dd>
     </dl></div>
     <label for="eNick">Nickname</label>
     <input type="text" id="eNick" value="${esc(m.nick)}">
@@ -3124,6 +3128,8 @@ function openDetail(id){
     <select id="eNature" onchange="document.getElementById('natEdit').innerHTML=statStrip(this.value)||''">
       ${natureOptions(m.nature||'')}</select>
     <div id="natEdit">${statStrip(m.nature)}</div>
+    <label for="fWhere">Caught at</label>
+    ${whereField(m.where || '')}
     <p class="note">Lineage ${m.slot} is permanent — it survives evolution, boxing and levelling.
       Nothing in Lineagelock changes a Pokémon's number (Rule 1). Battle order stays free (Rule 11) —
       it just moves too often to be worth tracking here.</p>
@@ -3169,6 +3175,42 @@ function saveEdit(id){
     if (nat) logIt('🧬', `<b>${esc(m.nick)}</b> is <b>${esc(nat)}</b> — ${
       NATURES[nat] ? `+10% ${STATS[NATURES[nat][0]]}, −10% ${STATS[NATURES[nat][1]]}` : 'no stat effect'}.`);
   }
+  setWhere(m, readWhere());
+  save(); render(); closeSheet();
+}
+
+// One place to record a location, so the Routes tab and the custom-area list stay in step
+// however it was set — from the catch form, the verdict screen or the detail sheet.
+function setWhere(m, where){
+  const w = (where || '').trim();
+  if (w === (m.where || '')) return false;
+  const was = m.where;
+  m.where = w;
+  if (w && !allAreas().includes(w) && !S.customAreas.includes(w)) S.customAreas.push(w);
+  logIt('📍', was
+    ? `<b>${esc(m.nick)}</b> was caught at <b>${esc(w || '—')}</b>, not ${esc(was)}.`
+    : `<b>${esc(m.nick)}</b> logged as caught at <b>${esc(w)}</b>.`);
+  return true;
+}
+// Offered straight after the roll, when you notice the location is blank.
+function askWhere(id){
+  const m = mon(id);
+  if (!m) return;
+  sheet(`<h3>📍 Where did you catch ${esc(m.nick)}?</h3>
+    <p class="note" style="margin:0 0 10px">${oneEach()
+      ? 'This ticks the location on the Routes tab and is how the tracker knows the area is spent (Rule 18).'
+      : 'Recorded on the Routes tab so you can see where you have been.'}</p>
+    ${whereField(m.where || S.lastArea || '')}
+    <div class="acts">
+      <button class="btn ghost" onclick="closeSheet()">Skip</button>
+      <button class="btn" onclick="saveWhere(${id})">Save</button>
+    </div>`);
+}
+function saveWhere(id){
+  const m = mon(id);
+  if (!m) return closeSheet();
+  const w = readWhere();
+  if (setWhere(m, w) && w) S.lastArea = w;
   save(); render(); closeSheet();
 }
 
