@@ -908,13 +908,34 @@ const capConfirmed = () => { const k = wallKey(); return !k || !!S.capOK[k]; };
 
 function capNum(){ const n = parseInt(S.cap, 10); return isFinite(n) && n > 0 ? n : null; }
 // Ace levels ship with most games (scraped from Serebii); Decay's come from its dev sheet.
-function knownAce(){
-  const k = wallKey();
-  if (k && S.capFix[k] != null) return S.capFix[k];   // you told us; we believe you
-  const g = gauntletAce();                 // one cap for the whole gauntlet: its highest ace
-  if (g) return g;
+// The ace level of one battle, honouring a correction you have made for that wall.
+function aceAt(i){
+  const b = battleList()[i];
+  if (!b || isPost(b)) return 0;
+  const c = chainAt(i);
+  const fix = S.capFix[c ? 'g' + c[0] + '-' + c[1] : 'b' + i];
+  return fix != null ? fix : (b[4] || 0);
+}
+// The ace of the wall in front of you, on its own — a chain counts as its strongest member.
+function wallAce(){
   const nx = nextMajor();
-  return nx && nx.b[4] ? nx.b[4] : null;
+  if (!nx) return null;
+  const g = gauntlet();
+  if (!g) return aceAt(nx.i) || null;
+  let top = 0;
+  for (let i = g.a; i <= g.z; i++) top = Math.max(top, aceAt(i));
+  return top || null;
+}
+// The cap itself, which is that ace or the highest one you have already faced, whichever is
+// greater. Caps only ever rise: you were legally allowed to reach the earlier one.
+function knownAce(){
+  const nx = nextMajor();
+  if (!nx) return null;
+  const g = gauntlet();
+  const upto = g ? g.z : nx.i;
+  let top = 0;
+  for (let i = 0; i <= upto; i++) top = Math.max(top, aceAt(i));
+  return top || null;
 }
 function syncCap(){
   const a = knownAce();
@@ -935,15 +956,19 @@ function overCap(){
 function confirmCap(){
   const k = wallKey();
   if (!k){ closeSheet(); return; }
-  const lv = knownAce();
+  const lv = wallAce();
+  const cap = knownAce();
   if (lv == null) return askCap();          // nothing on file at all — just ask for the number
   sheet(`<h3>📏 Cap for ${esc(wallName())}</h3>
     <p class="note" style="margin:0 0 4px">Next up is <b>${esc(wallName())}</b>, and we have that
       ace at <b>Lv ${lv}</b>${gauntlet() ? ' — the highest in the whole run, since it counts as one wall (Rule 37)' : ''}.</p>
     <div style="text-align:center;font-size:44px;font-weight:900;color:var(--gold);
       line-height:1.1;margin:10px 0">Lv ${lv}</div>
-    <p class="note" style="margin:0 0 12px">Is that right? Answer once and it is remembered for
-      the rest of the run.</p>
+    ${cap > lv ? `<p class="note" style="margin:0 0 4px;color:var(--gold)">Your cap stays at
+      <b>Lv ${cap}</b> — this wall is weaker than one you have already beaten, and a cap never
+      drops (Rule 29).</p>` : ''}
+    <p class="note" style="margin:0 0 12px">Is that ace right? Answer once and it is remembered
+      for the rest of the run.</p>
     <div class="acts">
       <button class="btn" onclick="acceptCap()">✓ Yes, Lv ${lv}</button>
     </div>
@@ -961,7 +986,7 @@ function acceptCap(){
   if (discharged().length) rotateGate();
 }
 function correctCap(){
-  const lv = knownAce();
+  const lv = wallAce();
   sheet(`<h3>📏 ${esc(wallName())}'s real ace level</h3>
     <p class="note" style="margin:0 0 10px">We had <b>Lv ${lv == null ? '—' : lv}</b>. What is it
       actually? This overrides the bundled figure for the rest of the run.</p>
