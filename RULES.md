@@ -388,7 +388,7 @@ Two more games are covered by equivalence, and the tracker says so on the wheel 
 
 Still uncovered: **Let's Go, Sword · Shield, Legends: Arceus and Scarlet · Violet.** The first three have published tables but no clean machine-readable source; Scarlet · Violet genuinely has no percentage tables at all, because it replaced fixed encounter slots with a dynamic biome spawn system. On those four the tracker tells you and you run First Encounter.
 
-**Fan games.** **Pokémon Decay** ships as a selectable game, built from the developers' own public spreadsheets: 59 major battles in story order (8 gyms, the Elite Four, Cynthia, 28 team-boss fights and 5 rival battles) and 93 areas of encounter data. One caveat the tracker repeats on screen — the dev sheet records *where* each species lives, not how often, so Decay's wheel gives **every species in an area equal odds**.
+**Fan games.** **Pokémon Decay** ships as a selectable game, built from the developers' own public spreadsheets: 57 major battles in story order (8 gyms, the Elite Four, Cynthia, team-boss fights and 5 rival battles) and 93 areas of encounter data. **Every one of those battles has its ace level**, taken from the dev sheet's full team lists — the highest level on the team, not the lead, which is what a cap has to police. One caveat the tracker repeats on screen — the dev sheet records *where* each species lives, not how often, so Decay's wheel gives **every species in an area equal odds**.
 
 **Decay sprites and roster.** Pick Decay and the tracker uses **the game's own icons** — all 560 of them, taken from its `Graphics/Pokemon/Icons` folder — so Delta forms, the 44 original species and everything else look exactly as they do in-game rather than borrowing a vanilla lookalike.
 
