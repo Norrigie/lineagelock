@@ -1050,11 +1050,19 @@ function confirmCap(){
   sheet(`<h3>📏 Cap for ${esc(wallName())}</h3>
     <p class="note" style="margin:0 0 4px">Next up is <b>${esc(wallName())}</b>, and we have that
       ace at <b>Lv ${lv}</b>${gauntlet() ? ' — the highest in the whole run, since it counts as one wall (Rule 37)' : ''}.</p>
-    <div style="text-align:center;font-size:44px;font-weight:900;color:var(--gold);
-      line-height:1.1;margin:10px 0">Lv ${lv}</div>
-    ${cap > lv ? `<p class="note" style="margin:0 0 4px;color:var(--gold)">Your cap stays at
-      <b>Lv ${cap}</b> — this wall is weaker than one you have already beaten, and a cap never
-      drops (Rule 29).</p>` : ''}
+    ${cap > lv
+      ? `<div style="display:flex;gap:10px;margin:12px 0">
+          <div style="flex:1;text-align:center;border:1px solid var(--line);border-radius:12px;padding:8px 4px">
+            <div style="font-size:10px;font-weight:900;letter-spacing:1px;color:var(--dim)">ITS ACE</div>
+            <div style="font-size:34px;font-weight:900;line-height:1.15">Lv ${lv}</div></div>
+          <div style="flex:1;text-align:center;border:1px solid var(--gold);border-radius:12px;padding:8px 4px">
+            <div style="font-size:10px;font-weight:900;letter-spacing:1px;color:var(--gold)">YOUR CAP</div>
+            <div style="font-size:34px;font-weight:900;line-height:1.15;color:var(--gold)">Lv ${cap}</div></div>
+        </div>
+        <p class="note" style="margin:0 0 4px">The cap is held above this wall because you have
+          already beaten a stronger one, and a cap never drops (Rule 29). Play to <b>Lv ${cap}</b>.</p>`
+      : `<div style="text-align:center;font-size:44px;font-weight:900;color:var(--gold);
+          line-height:1.1;margin:10px 0">Lv ${lv}</div>`}
     <p class="note" style="margin:0 0 12px">Is that ace right? Answer once and it is remembered
       for the rest of the run.</p>
     <div class="acts">
@@ -1432,7 +1440,15 @@ function viewParty(){
     h += `<div class="nextup" onclick="tab='progress';pane='battles';render()">
       <div class="nlabel">NEXT MAJOR</div>
       <div class="nname">${esc(nx.b[0])}<span>${esc(nx.b[1]||'')}${nx.b[2]?' · '+esc(nx.b[2]):''}${
-        nx.b[4]?` · Ace Level ${nx.b[4]}`:''}</span></div>
+        (()=>{ const ace = nx.b[4], cap = S.levelCap ? capNum() : null;
+          if (!ace && !cap) return '';
+          // When a weaker wall follows a stronger one the cap is held above this ace (Rule 29),
+          // so show both — the cap is the number you actually play to.
+          if (cap && ace && cap !== ace)
+            return ` · ace Lv ${ace} · <b style="color:var(--gold)">your cap Lv ${cap}</b>`;
+          if (cap) return ` · <b style="color:var(--gold)">cap Lv ${cap}</b>`;
+          return ` · Ace Level ${ace}`;
+        })()}</span></div>
       <button class="beat ${owed?'locked':''}" onclick="event.stopPropagation();beatNext()"
         title="${owed?'Sort the rotation out first':'Mark this major as beaten'}">${
         owed ? '⚠ rotate first' : '✓ Beat it'}</button>
