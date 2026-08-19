@@ -465,25 +465,29 @@ const EVERYTHING = { gyms:true, trials:true, nobles:true, paldea:true,
                      rivals:true, teams:true, league:true, postgame:false };
 const PRESETS = [
   ['vanilla', '🌱', 'Vanilla',
-   'The gentlest real run. Nobody dies, the badges and the League are the only walls, and no dials are on. Start here if you have never done this before.',
+   'The gentlest real run. Nobody is ever lost, the badges and the League are the only walls, and no dials are on. Start here if you have never done this before.',
    { mode:'rotation', encMode:'first', majors:SPINE_ONLY, levelCap:false, succession:'choose',
      tourDie:6, blood:false, mlock:false, shinyClause:true, starter:'half' }],
-  ['nuzlocke', '☠️', 'Classic Nuzlocke',
-   'As close to the original as this ruleset gets. A faint is final, one catch per area, every wall counts, and the level cap keeps you honest.',
-   { mode:'permadeath', encMode:'first', majors:EVERYTHING, levelCap:true, succession:'choose',
-     tourDie:6, blood:false, mlock:false, shinyClause:true, starter:'full' }],
-  ['dynasty', '🧬', 'Dynasty',
-   'Six houses with real identity. Each lineage locks to its founder\'s type, three encounters per area to choose from, and long tours so losing a chair actually costs you.',
-   { mode:'rotation', encMode:'audition', majors:EVERYTHING, levelCap:true, succession:'choose',
-     tourDie:8, blood:true, mlock:false, shinyClause:true, starter:'full' }],
-  ['chaos', '🌪️', 'Chaos',
-   'Maximum turbulence. The wheel picks your target, the die picks your heir, short tours churn the team constantly, and you do not even choose how you fish.',
-   { mode:'rotation', encMode:'wheel', majors:EVERYTHING, levelCap:true, succession:'random',
-     tourDie:4, blood:false, mlock:true, shinyClause:true, starter:'full' }],
   ['firstplay', '🌍', 'First Playthrough',
    'For a game you want to see all of. Catch everything, keep your starter, badges and the League only, and nothing is ever lost.',
    { mode:'rotation', encMode:'all', majors:SPINE_ONLY, levelCap:false, succession:'choose',
-     tourDie:6, blood:false, mlock:false, shinyClause:true, starter:'trad' }]
+     tourDie:6, blood:false, mlock:false, shinyClause:true, starter:'trad' }],
+  ['chaos', '🌪️', 'Chaos',
+   'Maximum turbulence, no permanent loss. The wheel picks your target, the die picks your heir, short tours churn the team constantly, and you do not even choose how you fish.',
+   { mode:'rotation', encMode:'wheel', majors:EVERYTHING, levelCap:true, succession:'random',
+     tourDie:4, blood:false, mlock:true, shinyClause:true, starter:'full' }],
+  ['veterans', '⚰️', 'Veterans',
+   'The middle path, and probably the one most people want. Only a faint at a Major Battle costs you a Pokémon — routes, trainers and wild crits are all free. Your Box fills up with veterans of the walls that beat them.',
+   { mode:'retire', encMode:'first', majors:EVERYTHING, levelCap:true, succession:'choose',
+     tourDie:6, blood:false, mlock:false, shinyClause:true, starter:'full' }],
+  ['dynasty', '🧬', 'Dynasty',
+   'Six houses that can genuinely die out. Each lineage locks to its founder\'s type, three encounters per area to choose from, long tours, and a faint at a wall retires that Pokémon for good — so a dynasty losing its last heir is over.',
+   { mode:'retire', encMode:'audition', majors:EVERYTHING, levelCap:true, succession:'choose',
+     tourDie:8, blood:true, mlock:false, shinyClause:true, starter:'full' }],
+  ['nuzlocke', '☠️', 'Classic Nuzlocke',
+   'As close to the original as this ruleset gets. Any faint anywhere is final, one catch per area, every wall counts, and the level cap keeps you honest.',
+   { mode:'permadeath', encMode:'first', majors:EVERYTHING, levelCap:true, succession:'choose',
+     tourDie:6, blood:false, mlock:false, shinyClause:true, starter:'full' }]
 ];
 
 const MAJORGROUPS = [
@@ -2222,7 +2226,7 @@ function openPresets(){
   sheet(`<h3>⚡ Start from a preset</h3>
     <p class="note" style="margin:0 0 14px">${locked
       ? '<b style="color:var(--gold)">Locked — this run has already started.</b>'
-      : 'One tap sets the mode, the encounter rule, which battles count and all seven dials. Every one of them stays adjustable afterwards, so this is a starting point rather than a cage.'}</p>
+      : 'One tap sets the mode, the encounter rule, which battles count and all seven dials. Every one of them stays adjustable afterwards, so this is a starting point rather than a cage. They are listed gentlest first, and the mode each one uses is the biggest difference between them.'}</p>
     ${PRESETS.map(([key, icon, name, blurb]) => `<div class="modecard ${S.preset===key?'on':''}"
       ${locked?'':`onclick="applyPreset('${key}')"`}>
       <div class="mhead">${icon} ${name}<span>${S.preset===key?'CURRENT':''}</span></div>

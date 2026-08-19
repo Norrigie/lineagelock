@@ -158,7 +158,7 @@ In **☠️ Permadeath** the pressure is the obvious one: a faint is final, the 
 
 In **🔁 Rotation** there's no death to be afraid of, so "loss" can't be the pressure. Instead it comes from the thing this ruleset is actually about: **you don't get to keep the same six forever.** Rules 26–28 and 32 all push you toward rotating your lineages, which is the fun part, rather than punishing you for playing badly, which is the part everyone quits over. There's no scorecard in either mode, and in Rotation the only way to fail is to never finish.
 
-Rules 24, 25, 28, 29 and 31 apply to both modes. Rules 26, 27, 30 and 32 are **Rotation only** — they're about tours, and Permadeath doesn't have tours.
+Rules 24, 25, 28, 29 and 31 apply in every mode. Rules 26, 27, 30 and 32 are about **tours**, so they apply in **🔁 Rotation and ⚰️ Retirement** but not in ☠️ Permadeath, which has no tours — there, a faint removes the Pokémon outright and succession is simply the next living member of the lineage.
 
 **Rule 24 — Set mode / no items.** Battle Style: Set (no free switch on faint). No healing items, X-items, or Revives *during* battle. Between battles, heal all you like. This is the only real "difficulty" rule and it's the one that makes rotation matter.
 
@@ -168,7 +168,7 @@ Rules 24, 25, 28, 29 and 31 apply to both modes. Rules 26, 27, 30 and 32 are **R
 
 The one exception to "fights *against* them": a few rivals turn up in a **multi battle at a story wall** where they fight alongside you against someone else — Barry at the Spear Pillar is the clearest case. Those are on the list, because the wall is real even if the rival is on your side of it. Ordinary tag-alongs on a route are not.
 
-**Rule 26 — Tour of Duty (🔁 Rotation mode only).** The moment a Pokémon takes a chair — caught into an empty slot, or rotated in from the Box — **roll 1d6**. That's its **tour**: the number of Major Battles it will serve before it hands the chair to the next in its lineage.
+**Rule 26 — Tour of Duty (🔁 Rotation and ⚰️ Retirement).** The moment a Pokémon takes a chair — caught into an empty slot, or rotated in from the Box — **roll 1d6**. That's its **tour**: the number of Major Battles it will serve before it hands the chair to the next in its lineage.
 
 - Write it on the card the day it arrives. A Pokémon that rolls a 6 is an institution; one that rolls a 1 is a cameo. You know from the start which is which.
 - Its tour ticks down by one each time you win a Major Battle. At **zero**, it steps down at the next PC and its successor rolls a fresh tour of its own.
@@ -176,7 +176,9 @@ The one exception to "fights *against* them": a few rivals turn up in a **multi 
 
 This is the engine of Rotation mode, and it is deliberately **not** a punishment. It fires whether you win comfortably or scrape through, so a clean run turns over exactly as much as a messy one — and because you can see every term counting down, you're planning the handover for hours before it happens rather than being ambushed by it.
 
-**Rule 27 — A faint ends a tour early (🔁 Rotation mode only).** Any Pokémon that faints during a Major Battle is **Winded**: its tour is over as of that moment, regardless of how many majors it had left. It hands the chair over **at the very next PC** — before the next gym, before the next route, before anything else. An only child stays and re-enlists as usual.
+**Rule 27 — A faint ends a tour early (🔁 Rotation and ⚰️ Retirement).** Any Pokémon that faints during a Major Battle is **Winded**: its tour is over as of that moment, regardless of how many majors it had left. It hands the chair over **at the very next PC** — before the next gym, before the next route, before anything else. An only child stays and re-enlists as usual.
+
+**In ⚰️ Retirement this is permanent** (Rule 40): the Pokémon is retired rather than benched, it leaves the chair immediately rather than at the next PC, and there is no re-enlisting — an only child that goes down leaves its lineage empty.
 
 "Before your next Major Battle" would let you ride the fainted Pokémon through every route and trainer in between and rotate one step from the gym door, which is no penalty at all. Doing it immediately means the loss actually costs you the Pokémon you were leaning on, right when you were leaning on it. *(Reordering the party doesn't clear it — moving a tired Pokémon to sixth place isn't a rotation.)*
 
@@ -192,7 +194,7 @@ This is the engine of Rotation mode, and it is deliberately **not** a punishment
 - Practically it stops you steamrolling the game, and it turns your bench into a resource: the under-levelled Pokémon you've been ignoring are suddenly the *legal* ones.
 - **The tracker knows the numbers, and checks them with you.** Every major battle in all 21 mainline games and in Decay ships with its ace level. After each major, the tracker names the next wall, shows the ace level it has on file, and asks once whether that is right. Say yes and it is locked in for the run; say no and your number overrides the bundled one permanently. Either way it never asks about that wall again. A Rule 37 chain counts as one wall, so the Elite Four is confirmed once, not five times. On a ROM hack with no bundled list it simply asks for the number the first time.
 
-**Rule 30 — Random Succession (optional, 🔁 Rotation mode).** When a chair opens, you don't choose who fills it — **the lineage does**. Number that lineage's benched Pokémon and roll 1d6 to pick one, re-rolling anything higher than the count.
+**Rule 30 — Random Succession (optional, 🔁 Rotation and ⚰️ Retirement).** When a chair opens, you don't choose who fills it — **the lineage does**. Number that lineage's benched Pokémon and roll 1d6 to pick one, re-rolling anything higher than the count.
 
 You still control everything else: who you catch, who you bench, what order you field them in. What you give up is the ability to hand-pick your successor, which means your Box stops being a shelf of options and becomes a genuine line of succession. Turn it off (the default) if you'd rather choose.
 
@@ -202,13 +204,15 @@ You still control everything else: who you catch, who you bench, what order you 
 
 Five more switches, all set at Setup 7 and locked for the run, all off by default. They join **Level Cap** (29) and **Random Succession** (30), which live in Section E because they're about stakes. Nothing here is needed to play Lineagelock — each one takes a part of the run the default rules leave alone and hands it to the die.
 
-**Rule 32 — Tour Length (🔁 Rotation mode only).** Rule 26 rolls tours on 1d6. You may set that die to **1d4**, **1d6** or **1d8** instead, for the whole run.
+**Rule 32 — Tour Length (🔁 Rotation and ⚰️ Retirement).** Rule 26 rolls tours on 1d6. You may set that die to **1d4**, **1d6** or **1d8** instead, for the whole run.
 
 - **1d4** — average tour of 2½ majors. Brutal churn: in a normal-length game you will field nearly everything you catch, and a deep lineage is a genuine advantage rather than a curiosity. This is the setting for people who found the default too static.
 - **1d6** — the default, average 3½.
 - **1d8** — average 4½. A Pokémon that rolls well is with you for most of a region, and handovers become events rather than routine. Best paired with Bloodline Purity, where losing a chair-holder actually costs you something specific.
 
 The die you pick changes the *feel* of the run more than any other dial, and it costs nothing to try. It has no effect in Permadeath, which has no tours.
+
+In **⚰️ Retirement** the die matters more than anywhere else: a short tour means more Pokémon pass through each chair, so more of them are standing in it when a wall comes — and a wall is the only thing that can take one from you.
 
 **Rule 33 — Bloodline Purity.** The first Pokémon ever to *hold* a lineage's chair is its **founder**, and it fixes that lineage's **type**. If the founder has two types, you choose which one at the moment it takes the chair; that choice is permanent for as long as the dynasty lives.
 
@@ -285,15 +289,20 @@ Only the categories your game actually has are offered — Alola shows no Gyms r
 
 **Rule 39 — Presets.** Between the three modes, four encounter rules, seven dials and eight battle categories there are more configurations of this ruleset than anyone needs. Five named starting points cover the shapes worth playing:
 
-| | Sets |
-|---|---|
-| 🌱 **Vanilla** | Rotation · first encounter · badges and the League only · no dials |
-| ☠️ **Classic Nuzlocke** | Permadeath · first encounter · every wall counts · level cap on |
-| 🧬 **Dynasty** | Rotation · Audition · bloodline purity · 1d8 tours · level cap |
-| 🌪️ **Chaos** | Rotation · the wheel · random succession · 1d4 tours · method lock · level cap |
-| 🌍 **First Playthrough** | Rotation · Catch 'em All · badges and the League only · traditional starter |
+Listed gentlest first. The **mode** is the biggest difference between them:
+
+| | Mode | Sets |
+|---|---|---|
+| 🌱 **Vanilla** | 🔁 Rotation | first encounter · badges and the League only · no dials |
+| 🌍 **First Playthrough** | 🔁 Rotation | Catch 'em All · badges and the League only · traditional starter |
+| 🌪️ **Chaos** | 🔁 Rotation | the wheel · random succession · 1d4 tours · method lock · level cap |
+| ⚰️ **Veterans** | ⚰️ Retirement | first encounter · every wall counts · level cap |
+| 🧬 **Dynasty** | ⚰️ Retirement | Audition · bloodline purity · 1d8 tours · level cap |
+| ☠️ **Classic Nuzlocke** | ☠️ Permadeath | first encounter · every wall counts · level cap |
 
 A preset is a starting point, not a cage: every switch stays adjustable afterwards, and changing one just means the run no longer carries that preset's name. **Your game is never touched** — that is always your own choice.
+
+**Veterans** is the one to reach for if Rotation sounds toothless and Permadeath sounds punishing — only walls take Pokémon from you. **Dynasty** uses Retirement deliberately rather than Rotation: with nothing ever lost, a bloodline can't actually die out, which is most of what makes Bloodline Purity interesting.
 
 If you have never played this before, take **Vanilla**. It is the version with the fewest moving parts that still feels like the challenge, and you can turn things on once you know which parts you want more of.
 
