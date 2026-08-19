@@ -128,6 +128,7 @@
   .nextup .nname span{display:block;font-weight:600;font-size:12.5px;color:var(--dim)}
   .nextup .ngo{color:var(--dim);font-size:20px}
   /* Beat the next wall without leaving this tab. */
+  .bat.muted{opacity:.42}
   .nextup .beat{background:var(--gold);color:#1a1206;border:0;border-radius:9px;font:inherit;
     font-size:12.5px;font-weight:900;padding:7px 12px;cursor:pointer;white-space:nowrap}
   .nextup .beat:active{filter:brightness(.9)}
@@ -453,6 +454,40 @@ const GENDERS = {
 };
 const SHORT = {atk:'Atk', def:'Def', spa:'SpA', spd:'SpD', spe:'Spe'};
 const FLAVOR = {atk:'Spicy', def:'Sour', spa:'Dry', spd:'Bitter', spe:'Sweet'};
+// Which kinds of battle a run counts as Major Battles (Rule 38). Grouped rather than offered
+// one kind at a time, because a game has gyms or trials or nobles, never all three.
+const MAJORGROUPS = [
+  ['gyms',     '🏅', 'Gyms',                     ['gym']],
+  ['trials',   '🌺', 'Trials & Grand Trials',    ['trial','kahuna']],
+  ['paldea',   '⭐', 'Titans & Team Star bases', ['titan','star']],
+  ['nobles',   '🌿', 'Nobles',                   ['noble']],
+  ['rivals',   '👥', 'Rival battles',            ['rival']],
+  ['teams',    '🦹', 'Villain-team bosses',      ['boss']],
+  ['league',   '👑', 'Elite Four & Champion',    ['e4','champ']],
+  ['postgame', '🌙', 'Post-game battles',        ['post']]
+];
+const KIND2GROUP = {};
+for (const [key,,, kinds] of MAJORGROUPS) for (const k of kinds) KIND2GROUP[k] = key;
+// Battles you added yourself always count — you wouldn't have typed them in otherwise.
+function majorOn(kind){
+  if (kind === 'custom') return true;
+  const g = KIND2GROUP[kind];
+  return g ? S.majors[g] !== false : true;
+}
+// The single predicate for "this battle is outside the run's scope".
+const offList = b => !b || !majorOn(b[3]);
+// Which groups this game actually contains, so the picker only offers real choices.
+function gameGroups(){
+  const kinds = new Set(battleList().map(b => b[3]));
+  return MAJORGROUPS.filter(([,,, ks]) => ks.some(k => kinds.has(k)));
+}
+function majorScopeSummary(){
+  const on = gameGroups().filter(([k]) => S.majors[k] !== false);
+  if (!on.length) return 'nothing selected';
+  if (on.length === gameGroups().length) return 'every battle';
+  return on.map(([, ic, label]) => ic + ' ' + label.replace(' battles','').replace(' bosses','')).join(' · ');
+}
+
 const KIND = {
   post:['Post-game','#6f7c8f'],
   gym:['Gym','var(--gold)'], e4:['Elite Four','var(--purple)'], champ:['Champion','var(--red)'],
@@ -643,7 +678,9 @@ function blankRun(name, seed){
     game:null, beat:{}, custom:[], mode:null, encMode:null, lastArea:'',
     areas:{}, customAreas:[], levelCap:false, succession:'choose', cap:'',
     tourDie:6, blood:false, bloodType:{}, shinyClause:false, starter:'full',
-    mlock:false, methods:{}, capOK:{}, capFix:{} };
+    mlock:false, methods:{}, capOK:{}, capFix:{},
+    majors:{ gyms:true, trials:true, paldea:true, nobles:true, rivals:true,
+             teams:true, league:true, postgame:false } };
 }
 function fixRun(d, i){
   d.id = d.id || uid();
@@ -663,6 +700,8 @@ function fixRun(d, i){
   d.starter = ['full','half','trad'].includes(d.starter) ? d.starter : 'full';
   d.mlock = !!d.mlock; d.methods = d.methods || {};
   d.capOK = d.capOK || {}; d.capFix = d.capFix || {};
+  d.majors = Object.assign({ gyms:true, trials:true, paldea:true, nobles:true, rivals:true,
+    teams:true, league:true, postgame:false }, d.majors || {});
   return d;
 }
 
@@ -708,6 +747,12 @@ function openHouseRules(){
     <p class="note" style="margin:0 0 14px">${locked
       ? '<b style="color:var(--gold)">Locked — this run has already started.</b>'
       : 'All of these lock once you catch your first Pokémon.'}</p>
+
+    <div class="modecard on" onclick="closeSheet();openMajorScope()">
+      <div class="mhead">🎯 Which battles count<span>${esc(majorScopeSummary())}</span></div>
+      <div class="mbody">Choose whether rival fights, villain-team bosses, trials and the League
+        count as Major Battles for this run (Rule 38).</div>
+    </div>
 
     <div class="modecard ${S.levelCap?'on':''}" ${locked?'':'onclick="toggleCap()"'}>
       <div class="mhead">📏 Level cap<span>${S.levelCap?'ON':'off'}</span></div>
@@ -818,7 +863,7 @@ function toggleSuccession(){
 // The next major's ace level isn't in any dataset I could bundle, so you tell the
 // tracker once per wall and it polices the rest.
 // Rule 37: a run of majors you can't reach a Box between counts as one wall.
-const isGaunt = b => b && (b[3] === 'e4' || b[3] === 'champ') && !isPost(b);
+const isGaunt = b => b && (b[3] === 'e4' || b[3] === 'champ') && !offList(b);
 // Extras beyond the League block, by first and last battle name. Each one is a place the
 // game marches you straight from one major into the next:
 //   bw  — the Elite Four runs straight into N's Castle; N and Ghetsis follow with no Centre.
@@ -912,7 +957,7 @@ function capNum(){ const n = parseInt(S.cap, 10); return isFinite(n) && n > 0 ? 
 // The ace level of one battle, honouring a correction you have made for that wall.
 function aceAt(i){
   const b = battleList()[i];
-  if (!b || isPost(b)) return 0;
+  if (offList(b)) return 0;
   const c = chainAt(i);
   const fix = S.capFix[c ? 'g' + c[0] + '-' + c[1] : 'b' + i];
   return fix != null ? fix : (b[4] || 0);
@@ -1316,7 +1361,7 @@ function render(){
 // the first major battle you haven't ticked
 function nextMajor(){
   const list = battleList();
-  for (let i = 0; i < list.length; i++) if (!S.beat[i] && !isPost(list[i])) return { i, b: list[i] };
+  for (let i = 0; i < list.length; i++) if (!S.beat[i] && !offList(list[i])) return { i, b: list[i] };
   return null;
 }
 
@@ -1439,8 +1484,13 @@ function viewParty(){
           <div class="binfo"><div class="bname">Encounter rule</div>
             <div class="bmeta">${S.encMode?esc(encModeName()):'First encounter, or spin the wheel'}</div></div>
         </div>
+        <div class="step ${S.game?'done':''}" onclick="openMajorScope()">
+          <div class="tick">${S.game?'✓':'4'}</div>
+          <div class="binfo"><div class="bname">Which battles count</div>
+            <div class="bmeta">${S.game ? esc(majorScopeSummary()) : 'pick your game first'}</div></div>
+        </div>
         <div class="step done" onclick="openHouseRules()">
-          <div class="tick">4</div>
+          <div class="tick">5</div>
           <div class="binfo"><div class="bname">Optional dials</div>
             <div class="bmeta">${(()=>{
               const on = [];
@@ -1749,8 +1799,8 @@ function battleList(){
 }
 // post-league rematches are listed but don't count toward the run's progress
 const isPost = b => b && b[3] === 'post';
-function beatenCount(){ return battleList().filter((b,i)=>S.beat[i] && !isPost(b)).length; }
-function mainCount(){ return battleList().filter(b=>!isPost(b)).length; }
+function beatenCount(){ return battleList().filter((b,i)=>S.beat[i] && !offList(b)).length; }
+function mainCount(){ return battleList().filter(b=>!offList(b)).length; }
 function gameName(){
   if (!S.game) return 'No game set';
   if (S.game==='custom') return 'ROM hack / fan game';
@@ -1787,12 +1837,14 @@ function viewBattles(){
     h += list.map((b,i)=>{
       const [label,col] = KIND[b[3]] || KIND.custom;
       const on = !!S.beat[i];
-      return `<div class="bat ${on?'done':''}" onclick="toggleBattle(${i})">
+      const out = offList(b);
+      return `<div class="bat ${on?'done':''} ${out?'muted':''}" onclick="toggleBattle(${i})">
         <div class="tick">${on?'✓':''}</div>
         <div class="binfo">
           <div class="bname">${esc(b[0])}</div>
           <div class="bmeta">${esc(b[1])}${b[2]?` · ${esc(b[2])}`:''}${
-          b[4]?` · <b style="color:var(--gold)">Ace Level ${b[4]}</b>`:''}</div>
+          b[4] && !out ?` · <b style="color:var(--gold)">Ace Level ${b[4]}</b>`:''}${
+          out ? ' · <i>not counted this run</i>' : ''}</div>
         </div>
         <div class="kind" style="color:${col};border-color:${col}33">${label}</div>
       </div>`;
@@ -1815,8 +1867,9 @@ function toggleBattle(i){
   // Inside a chain there's no PC and no switching, so the whole run is one major (Rule 37):
   // tours tick once, the faint question is asked once, and the cap moves once — all at the end.
   const done = chainEnd(i);
-  if (done && tours() && b[3] !== 'post') tickTours();
-  capPending = done && b[3] !== 'post';
+  const counts = !offList(b);                 // out of scope: tick it, but it changes nothing
+  if (done && counts && tours()) tickTours();
+  capPending = done && counts;
   save(); render();
   if (!done){
     const c = chainAt(i);
@@ -1828,8 +1881,8 @@ function toggleBattle(i){
     if (!c) return b[3] === 'champ';
     for (let j = c[0]; j <= c[1]; j++) if (battleList()[j][3] === 'champ') return true;
     return false; })();
-  if (champInChain && b[3] !== 'post'){ openSummary(); return; }   // that's the run
-  if (!isPD() && party().length){ askWhoFainted(i); return; }
+  if (champInChain && counts){ openSummary(); return; }   // that's the run
+  if (counts && !isPD() && party().length){ askWhoFainted(i); return; }
   postBattleFlow();
 }
 
@@ -2049,6 +2102,38 @@ function nagWinded(owed, i){
       <button class="sw" onclick="benchList(${m.slot})">Rotate</button>
     </div>`).join('')}
     <div class="acts"><button class="btn" onclick="closeSheet();rotateGate()">Rotate now</button></div>`);
+}
+
+// Rule 38. Locked with the other dials once the run starts, because the beaten count and the
+// cap are both derived from it.
+function openMajorScope(){
+  const locked = S.mons.length > 0;
+  const groups = gameGroups();
+  if (!S.game) return openGamePicker();
+  const rows = groups.map(([key, icon, label, kinds]) => {
+    const count = battleList().filter(b => kinds.includes(b[3])).length;
+    const on = S.majors[key] !== false;
+    return `<div class="modecard ${on?'on':''}" ${locked?'':`onclick="toggleMajorGroup('${key}')"`}>
+      <div class="mhead">${icon} ${label}<span>${on?'COUNTS':'off'}</span></div>
+      <div class="mbody">${count} battle${count===1?'':'s'} in ${esc(gameName())}${
+        key==='postgame' ? ' — off by default; these come after the credits.' : '.'}</div>
+    </div>`;
+  }).join('');
+  const n = mainCount();
+  sheet(`<h3>🎯 Which battles count</h3>
+    <p class="note" style="margin:0 0 14px">${locked
+      ? '<b style="color:var(--gold)">Locked — this run has already started.</b>'
+      : 'Pick what a Major Battle means for this run (Rule 38). Everything else still shows on the Progress tab and can be ticked, it just does not tick tours, move the cap or end anyone\'s duty.'}</p>
+    ${rows}
+    <p class="note" style="margin:12px 0 0">Currently <b>${n}</b> battle${n===1?'':'s'} count as majors.</p>
+    <div class="acts"><button class="btn ghost" onclick="closeSheet()">${locked?'Close':'Done'}</button></div>`);
+}
+function toggleMajorGroup(key){
+  if (S.mons.length) return;
+  S.majors[key] = S.majors[key] === false;
+  const g = MAJORGROUPS.find(x => x[0] === key);
+  logIt('🎯', `${g[1]} ${g[2]} <b>${S.majors[key] ? 'count' : 'do not count'}</b> as majors.`);
+  save(); render(); openMajorScope();
 }
 
 function openGamePicker(){

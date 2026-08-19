@@ -37,6 +37,7 @@ Every Nuzlocke run eventually becomes the same story: you get attached, somethin
    | 🎣 **Method Lock** (34) | The die decides *how* you may look in an area — grass, surf or rod |
    | ✨ **Shiny Clause** (35) | Shinies are always catchable and never spend an area |
    | 🔥 **Starter Style** (36) | How much of your starter the die decides |
+   | 🎯 **What counts** (38) | Which categories of battle are Major Battles at all |
 
    None of them are needed. Every one of them changes the run more than it looks like it will, so add them one at a time rather than switching on all seven for your first go.
 8. **Setup 8 — Optional difficulty floor.** Turn off the EXP Share / affection boosts / EXP All if your game has them, purely because the challenge is more interesting when your rotating bench isn't wildly overleveled. Not mandatory. Nobody's checking.
@@ -155,7 +156,7 @@ Rules 24, 25, 28, 29 and 31 apply to both modes. Rules 26, 27, 30 and 32 are **R
 
 **Rule 24 — Set mode / no items.** Battle Style: Set (no free switch on faint). No healing items, X-items, or Revives *during* battle. Between battles, heal all you like. This is the only real "difficulty" rule and it's the one that makes rotation matter.
 
-**Rule 25 — Major battles.** A **Major Battle** is any Gym Leader, Grand Trial, Titan, Team Star base, Noble, **Rival battle**, Team-Whatever boss, Elite Four member, or Champion — any story wall the game builds up to. These are the only battles the stakes rules care about. The tracker ships the full checklist for all 21 mainline games plus Decay, so you don't have to decide what counts: pick your game at the start of the run and tick them off as you go.
+**Rule 25 — Major battles.** A **Major Battle** is any Gym Leader, Grand Trial, Titan, Team Star base, Noble, **Rival battle**, Team-Whatever boss, Elite Four member, or Champion — any story wall the game builds up to. These are the only battles the stakes rules care about — and **Rule 38** lets you narrow that list to the categories you actually want to count. The tracker ships the full checklist for all 21 mainline games plus Decay, so you don't have to decide what counts: pick your game at the start of the run and tick them off as you go.
 
 **Rivals count, every time.** Your rival is the one trainer who keeps turning up with a team built to answer yours, so those fights carry the same weight as a gym — including for Winded (Rule 27). Every mainline game lists its rival battles **by location, in story order**: Blue's seven ambushes across Kanto, Silver's five, Barry's six in Diamond·Pearl and seven in Platinum, Hop's Postwick-to-Circhester run, Cheren and Bianca's twelve between them, Trace, Hugh, Calem/Serena, Hau and Nemona. Post-game rematches are excluded — that's a different, much stronger team, and a cap built on it would be meaningless.
 
@@ -255,6 +256,26 @@ If you're playing a ROM hack or a fan game and it marches you through two majors
 
 ---
 
+**Rule 38 — Choose what counts as a Major Battle.** Rule 25 lists every wall a game builds up to. You do not have to count all of them. At setup, switch each category on or off for the run:
+
+| | Counts | Typical use |
+|---|---|---|
+| 🏅 **Gyms** | the badge run | the spine of nearly every game |
+| 🌺 **Trials & Grand Trials** | Alola's captains and kahunas | Alola's equivalent of gyms |
+| ⭐ **Titans & Team Star bases** | Paldea's other two paths | leave off for a gyms-only Paldea run |
+| 🌿 **Nobles** | Legends: Arceus's frenzied nobles | the only walls that game has |
+| 👥 **Rival battles** | every story fight with your rival | the biggest single group — 134 across the games |
+| 🦹 **Villain-team bosses** | Rocket, Galactic, Plasma, Flare and the rest | |
+| 👑 **Elite Four & Champion** | the league | off makes the run end at the last gym |
+| 🌙 **Post-game** | rematches and anything after the credits | off by default |
+
+Only the categories your game actually has are offered — Alola shows no Gyms row, Kanto shows no Titans row.
+
+**What switching one off does.** That category stops being a Major Battle for every rule that cares: tours don't tick for it (Rule 26), it doesn't move the level cap (Rule 29), a faint in it doesn't end anyone's duty (Rule 27), and it isn't part of a no-PC chain (Rule 37). The battles are still listed and still tickable, marked *not counted this run*, so you can keep track of where you are without them driving the ruleset.
+
+**Why you'd want this.** A **gyms-only** run is the gentlest version: eight walls, eight cap steps, and tours that last a long time in real playing hours. Adding rivals roughly doubles the number of majors and makes Rotation churn hard. Counting everything is the longest, most turbulent version of the run and the most likely to show you your whole Box. Pick the one that matches how much upheaval you actually want, rather than taking whatever the game happens to contain.
+
+**Locked once you start.** Beaten counts and the cap are both derived from this, so like every other dial it fixes itself at your first catch.
 ## 3. Quick Reference
 
 *Everything you need mid-run, on one screen. Rule numbers in brackets if you want the detail.*
@@ -352,6 +373,7 @@ The starter options and the level cap used to live here; they're now Rules 36 an
 - **Multiple runs at once** — tap the run name in the header to switch. Every run keeps its own party, Box, history, game, mode, encounter rule and naming theme, so a relaxed Rotation run through FireRed and a Permadeath Decay run can sit side by side without touching each other. Rename, reset or delete any of them from the same screen.
 
 - **Run setup** — four steps before your first catch: **mode** (🔁 Rotation or ☠️ Permadeath), **game**, **encounter rule** (👣 First encounter · 🎬 Audition · 🎡 Spin the wheel · 🌍 Catch 'em all) and the **dials**. Everything locks itself the moment you catch something, exactly as Rules 8 and 15 require.
+- **Which battles count** — a setup step listing only the categories your game has, with how many battles each one holds. Switch rivals or the League off and the Progress tab greys them out as *not counted this run*: still tickable, but no longer moving the cap or ticking tours (Rule 38).
 - **The seven dials** (⚙️ on the setup screen) — level cap, random succession, tour length, bloodline purity, method lock, shiny clause and starter style, per Rules 29–30 and 32–36. Each one says what it does before you switch it on, and the setup card lists whichever you've enabled.
 - **The encounter wheel** — pick your area and how you're looking (grass, surfing, each rod), then spin a weighted wheel built from that area's real encounter table. It names your target, logs the odds it came up at, and hands the species straight into the catch flow. **1,128 locations across 15 games**, floors already folded together.
 - **Game picker** — choose from all 21 mainline games, or **ROM hack / fan game** to play without a preset battle list.
