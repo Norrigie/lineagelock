@@ -15,7 +15,10 @@ and a Magikarp.
 Then you pick what a faint costs you:
 
 - **🔁 Rotation** — nobody ever dies. The team churns because the rules make it churn.
+- **⚰️ Retirement** — a faint at a Major Battle retires that Pokémon for good; faints anywhere else are free.
 - **☠️ Permadeath** — a faint is final, and each lineage becomes a real line of succession.
+
+Not sure? **Five presets** set every switch in one tap — start with 🌱 Vanilla.
 
 **→ [Read the full ruleset](RULES.md)** · **→ [Open the tracker](https://Norrigie.github.io/lineagelock/)**
 
@@ -37,8 +40,9 @@ play; everything saves in your browser.
 - **465 major battles across 21 mainline games**, every one with its ace level, for the level cap.
 - **Era-correct typings** — Magnemite is pure Electric in Red · Blue, Clefairy is Normal until
   Gen VI. Checked against Serebii's per-generation Pokédexes.
-- **Seven optional dials**: level cap, random succession, tour length, bloodline purity, method
-  lock, shiny clause and starter style.
+- **Five presets** plus seven optional dials: level cap, random succession, tour length, bloodline
+  purity, method lock, shiny clause and starter style — and a choice of which battle categories
+  count as majors at all.
 - Multiple runs side by side, gender-aware themed nicknames, full history, JSON export/import.
 
 ### Running it offline

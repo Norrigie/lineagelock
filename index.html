@@ -456,6 +456,36 @@ const SHORT = {atk:'Atk', def:'Def', spa:'SpA', spd:'SpD', spe:'Spe'};
 const FLAVOR = {atk:'Spicy', def:'Sour', spa:'Dry', spd:'Bitter', spe:'Sweet'};
 // Which kinds of battle a run counts as Major Battles (Rule 38). Grouped rather than offered
 // one kind at a time, because a game has gyms or trials or nobles, never all three.
+// Named starting points (Rule 39). Each sets mode, encounter rule, scope and every dial; the
+// game is never touched, since that is yours to pick. "spine" means the game's badge-equivalent
+// walls — gyms, or trials, or nobles, depending on what it has.
+const SPINE_ONLY = { gyms:true, trials:true, nobles:true, paldea:false,
+                     rivals:false, teams:false, league:true, postgame:false };
+const EVERYTHING = { gyms:true, trials:true, nobles:true, paldea:true,
+                     rivals:true, teams:true, league:true, postgame:false };
+const PRESETS = [
+  ['vanilla', '🌱', 'Vanilla',
+   'The gentlest real run. Nobody dies, the badges and the League are the only walls, and no dials are on. Start here if you have never done this before.',
+   { mode:'rotation', encMode:'first', majors:SPINE_ONLY, levelCap:false, succession:'choose',
+     tourDie:6, blood:false, mlock:false, shinyClause:true, starter:'half' }],
+  ['nuzlocke', '☠️', 'Classic Nuzlocke',
+   'As close to the original as this ruleset gets. A faint is final, one catch per area, every wall counts, and the level cap keeps you honest.',
+   { mode:'permadeath', encMode:'first', majors:EVERYTHING, levelCap:true, succession:'choose',
+     tourDie:6, blood:false, mlock:false, shinyClause:true, starter:'full' }],
+  ['dynasty', '🧬', 'Dynasty',
+   'Six houses with real identity. Each lineage locks to its founder\'s type, three encounters per area to choose from, and long tours so losing a chair actually costs you.',
+   { mode:'rotation', encMode:'audition', majors:EVERYTHING, levelCap:true, succession:'choose',
+     tourDie:8, blood:true, mlock:false, shinyClause:true, starter:'full' }],
+  ['chaos', '🌪️', 'Chaos',
+   'Maximum turbulence. The wheel picks your target, the die picks your heir, short tours churn the team constantly, and you do not even choose how you fish.',
+   { mode:'rotation', encMode:'wheel', majors:EVERYTHING, levelCap:true, succession:'random',
+     tourDie:4, blood:false, mlock:true, shinyClause:true, starter:'full' }],
+  ['firstplay', '🌍', 'First Playthrough',
+   'For a game you want to see all of. Catch everything, keep your starter, badges and the League only, and nothing is ever lost.',
+   { mode:'rotation', encMode:'all', majors:SPINE_ONLY, levelCap:false, succession:'choose',
+     tourDie:6, blood:false, mlock:false, shinyClause:true, starter:'trad' }]
+];
+
 const MAJORGROUPS = [
   ['gyms',     '🏅', 'Gyms',                     ['gym']],
   ['trials',   '🌺', 'Trials & Grand Trials',    ['trial','kahuna']],
@@ -680,7 +710,7 @@ function blankRun(name, seed){
     tourDie:6, blood:false, bloodType:{}, shinyClause:false, starter:'full',
     mlock:false, methods:{}, capOK:{}, capFix:{},
     majors:{ gyms:true, trials:true, paldea:true, nobles:true, rivals:true,
-             teams:true, league:true, postgame:false } };
+             teams:true, league:true, postgame:false }, preset:null };
 }
 function fixRun(d, i){
   d.id = d.id || uid();
@@ -702,6 +732,7 @@ function fixRun(d, i){
   d.capOK = d.capOK || {}; d.capFix = d.capFix || {};
   d.majors = Object.assign({ gyms:true, trials:true, paldea:true, nobles:true, rivals:true,
     teams:true, league:true, postgame:false }, d.majors || {});
+  d.preset = d.preset || null;
   return d;
 }
 
@@ -818,42 +849,49 @@ function openHouseRules(){
 }
 function setTourDie(d){
   if (S.mons.length) return;
+  clearPreset();
   S.tourDie = d;
   logIt('📜', `Tours are rolled on <b>1d${d}</b>.`);
   save(); render(); openHouseRules();
 }
 function toggleBlood(){
   if (S.mons.length) return;
+  clearPreset();
   S.blood = !S.blood;
   logIt('🧬', `Bloodline purity <b>${S.blood?'on':'off'}</b>.`);
   save(); render(); openHouseRules();
 }
 function toggleMlock(){
   if (S.mons.length) return;
+  clearPreset();
   S.mlock = !S.mlock;
   logIt('🎣', `Method lock <b>${S.mlock?'on':'off'}</b>.`);
   save(); render(); openHouseRules();
 }
 function toggleShiny(){
   if (S.mons.length) return;
+  clearPreset();
   S.shinyClause = !S.shinyClause;
   logIt('✨', `Shiny clause <b>${S.shinyClause?'on':'off'}</b>.`);
   save(); render(); openHouseRules();
 }
 function setStarter(v){
   if (S.mons.length) return;
+  clearPreset();
   S.starter = v;
   logIt('🔥', `Starter style: <b>${v==='full'?'two rolls':v==='half'?'you pick, the die slots it':'traditional (lineage 1)'}</b>.`);
   save(); render(); openHouseRules();
 }
 function toggleCap(){
   if (S.mons.length) return;
+  clearPreset();
   S.levelCap = !S.levelCap;
   logIt('📏', `Level cap <b>${S.levelCap?'on':'off'}</b>.`);
   save(); render(); openHouseRules();
 }
 function toggleSuccession(){
   if (S.mons.length) return;
+  clearPreset();
   S.succession = S.succession === 'random' ? 'choose' : 'random';
   logIt('🎲', `Succession: <b>${S.succession === 'random' ? 'the die picks' : 'you pick'}</b>.`);
   save(); render(); openHouseRules();
@@ -1156,7 +1194,14 @@ function party(){ return S.mons.filter(m=>m.status==='party').sort((a,b)=>a.slot
 function boxed(){ return S.mons.filter(m=>m.status==='boxed'); }
 function fallen(){ return S.mons.filter(m=>m.status==='fallen'); }
 function living(){ return S.mons.filter(m=>m.status!=='fallen'); }
+// Anyone who could still take a chair, which is what "the run is over" actually depends on.
+function fieldable(){ return S.mons.filter(canField); }
 const isPD = () => S.mode === 'permadeath';
+// Retirement keeps tours; what changes is that being Winded at a wall is permanent (Rule 40).
+const isRetire = () => S.mode === 'retire';
+// Retired Pokémon are still yours and still in the Box — they just never compete again.
+const retiredList = () => S.mons.filter(m => m.retired);
+const canField = m => m && m.status !== 'fallen' && !m.retired;
 
 /* ---------- optional dials ---------- */
 const TYPE_LIST = ['normal','fire','water','electric','grass','ice','fighting','poison','ground',
@@ -1222,7 +1267,7 @@ function pureFor(m){
   const ts = monTypes(m);
   return ts.length ? ts.includes(t) : true;
 }
-function heirs(slot){ return lineage(slot).filter(x => x.status === 'boxed' && pureFor(x)); }
+function heirs(slot){ return lineage(slot).filter(x => x.status === 'boxed' && !x.retired && pureFor(x)); }
 function isStray(m){ return bloodOn() && m.status === 'boxed' && !pureFor(m); }
 // A chair that empties with nobody eligible ends the dynasty — the number is free to refound.
 function checkDynasty(slot){
@@ -1467,7 +1512,14 @@ function viewParty(){
   // rules leave it entirely free (Rule 11). The lineage grid is the part that matters.
 
   if (!S.mons.length){
+    const pre = S.preset && PRESETS.find(p => p[0] === S.preset);
     h += `<h2 class="sec">Run setup <span class="tip">before your first catch</span></h2>
+      <div class="nextup roll" onclick="openPresets()">
+        <div class="nlabel">PRESET</div>
+        <div class="nname">${pre ? esc(pre[1] + ' ' + pre[2]) : 'Start from a preset'}<span>${pre
+          ? 'every switch set — adjust any of them below'
+          : 'one tap sets the mode, encounter rule and all seven dials'}</span></div>
+        <div class="ngo">›</div></div>
       <div class="setup">
         <div class="step ${S.mode?'done':''}" onclick="openModePicker()">
           <div class="tick">${S.mode?'✓':'1'}</div>
@@ -1517,7 +1569,9 @@ function viewParty(){
    Locked once the first Pokémon is caught.
    ========================================================= */
 function modeName(){
-  return S.mode === 'permadeath' ? '☠️ Permadeath' : S.mode === 'rotation' ? '🔁 Rotation' : 'No mode set';
+  return S.mode === 'permadeath' ? '☠️ Permadeath'
+       : S.mode === 'retire'     ? '⚰️ Retirement'
+       : S.mode === 'rotation'   ? '🔁 Rotation' : 'No mode set';
 }
 function openModePicker(){
   const locked = S.mons.length > 0;
@@ -1530,6 +1584,12 @@ function openModePicker(){
       <div class="mhead">🔁 Rotation<span>${S.mode==='rotation'?'CURRENT':''}</span></div>
       <div class="mbody">A faint is just a faint — heal up and carry on. Nobody is ever lost.
         Your six change because the rules make them change, not because something died.</div>
+    </div>
+    <div class="modecard ${S.mode==='retire'?'on':''}" ${locked?'':'onclick="setMode(\'retire\')"'}>
+      <div class="mhead">⚰️ Retirement<span>${S.mode==='retire'?'CURRENT':''}</span></div>
+      <div class="mbody">The middle ground. A faint <i>during a Major Battle</i> <b>retires</b> that
+        Pokémon — still yours, still in the Box, never fields again. Faints anywhere else cost you
+        nothing. A lineage can die out, but only at a wall you were already afraid of (Rule 40).</div>
     </div>
     <div class="modecard ${S.mode==='permadeath'?'on':''}" ${locked?'':'onclick="setMode(\'permadeath\')"'}>
       <div class="mhead">☠️ Permadeath<span>${S.mode==='permadeath'?'CURRENT':''}</span></div>
@@ -1628,6 +1688,7 @@ function openEncModePicker(){
 function setEncMode(m){
   if (S.mons.length){ alert('This run has already started — the encounter rule is locked.'); return; }
   S.encMode = m;
+  clearPreset();
   logIt(m==='wheel'?'🎡':m==='audition'?'🎬':m==='all'?'🌍':'👣',
     `Encounter rule set to <b>${esc(encModeName())}</b>.`);
   save(); render(); closeSheet();
@@ -1953,7 +2014,9 @@ function windedOwed(){
   return windedList().filter(m =>
     lineage(m.slot).some(x => x.id !== m.id && x.status === 'boxed'));
 }
+// In Rotation an only child re-enlists; in Retirement it is gone, so the chair simply empties.
 function clearStuckWinded(){
+  if (isRetire()) return;
   let changed = false;
   for (const m of windedList())
     if (!lineage(m.slot).some(x => x.id !== m.id && x.status === 'boxed')){ m.winded = false; changed = true; }
@@ -1981,8 +2044,9 @@ function askWhoFainted(i){
     <p class="note" style="margin:0 0 10px">Tap everyone who went down ${many
       ? `anywhere in <b>${esc(gauntletName() || 'that run of fights')}</b> — it counted as one
          battle, so this is asked once at the end of it (Rule 37)`
-      : 'in that fight'}. They become <b>Winded</b> (Rule 27) and hand their chair over
-      <b>right away</b> — unless their lineage has nobody else, in which case they simply stay.</p>
+      : 'in that fight'}. ${isRetire()
+        ? 'In Retirement mode they are <b>retired for good</b> (Rule 40) — still yours, still in the Box, but never fielded again.'
+        : 'They become <b>Winded</b> (Rule 27) and hand their chair over <b>right away</b> — unless their lineage has nobody else, in which case they simply stay.'}</p>
     ${p.map(m=>`<div class="row" onclick="markWinded(${m.id}, this)">
       ${portrait(m,'sm')}
       <div class="info"><div class="nick">${esc(m.nick)} ${genderMark(m.gender)}</div>
@@ -2011,10 +2075,23 @@ function nobodyFainted(){
 }
 function finishWinded(){
   const w = windedList();
-  if (w.length) logIt('💨', `<b>${w.map(m=>esc(m.nick)).join(', ')}</b> ${w.length===1?'is':'are'}
-    <b>Winded</b> — tour over.`);
+  if (w.length){
+    if (isRetire()){
+      // Rule 40: at a wall, Winded is permanent. They leave the chair now rather than waiting.
+      for (const m of w){
+        m.retired = true; m.winded = false; m.term = null;
+        m.status = 'boxed'; m.retiredAt = Date.now();
+      }
+      logIt('⚰️', `<b>${w.map(m=>esc(m.nick)).join(', ')}</b> went down at a Major Battle and
+        ${w.length===1?'is':'are'} <b>retired</b> — still yours, never fields again.`);
+    } else {
+      logIt('💨', `<b>${w.map(m=>esc(m.nick)).join(', ')}</b> ${w.length===1?'is':'are'}
+        <b>Winded</b> — tour over.`);
+    }
+  }
   clearStuckWinded();
   save(); render();
+  if (isRetire() && !fieldable().length){ openSummary(); return; }   // nothing left to field
   postBattleFlow();          // Rule 27: the handover happens now, not "before the next major"
 }
 
@@ -2130,11 +2207,44 @@ function openMajorScope(){
 }
 function toggleMajorGroup(key){
   if (S.mons.length) return;
+  clearPreset();
   S.majors[key] = S.majors[key] === false;
   const g = MAJORGROUPS.find(x => x[0] === key);
   logIt('🎯', `${g[1]} ${g[2]} <b>${S.majors[key] ? 'count' : 'do not count'}</b> as majors.`);
   save(); render(); openMajorScope();
 }
+
+function openPresets(){
+  const locked = S.mons.length > 0;
+  sheet(`<h3>⚡ Start from a preset</h3>
+    <p class="note" style="margin:0 0 14px">${locked
+      ? '<b style="color:var(--gold)">Locked — this run has already started.</b>'
+      : 'One tap sets the mode, the encounter rule, which battles count and all seven dials. Every one of them stays adjustable afterwards, so this is a starting point rather than a cage.'}</p>
+    ${PRESETS.map(([key, icon, name, blurb]) => `<div class="modecard ${S.preset===key?'on':''}"
+      ${locked?'':`onclick="applyPreset('${key}')"`}>
+      <div class="mhead">${icon} ${name}<span>${S.preset===key?'CURRENT':''}</span></div>
+      <div class="mbody">${blurb}</div>
+    </div>`).join('')}
+    <p class="note" style="margin:12px 0 0">Your game is never changed by a preset — that is always
+      your choice.</p>
+    <div class="acts"><button class="btn ghost" onclick="closeSheet()">${locked?'Close':'Cancel'}</button></div>`);
+}
+function applyPreset(key){
+  if (S.mons.length){ alert('This run has already started — the setup is locked.'); return; }
+  const p = PRESETS.find(x => x[0] === key);
+  if (!p) return;
+  const cfg = p[4];
+  S.mode = cfg.mode; S.encMode = cfg.encMode;
+  S.majors = Object.assign({}, cfg.majors);
+  S.levelCap = cfg.levelCap; S.succession = cfg.succession; S.tourDie = cfg.tourDie;
+  S.blood = cfg.blood; S.mlock = cfg.mlock; S.shinyClause = cfg.shinyClause; S.starter = cfg.starter;
+  S.preset = key;
+  logIt('⚡', `Preset <b>${p[1]} ${p[2]}</b> applied — ${esc(modeName())}, ${esc(encModeName())}, ${
+    esc(majorScopeSummary())}.`);
+  save(); render(); closeSheet();
+}
+// Any hand change means the run no longer matches a preset, so stop claiming it does.
+function clearPreset(){ if (S.preset){ S.preset = null; } }
 
 function openGamePicker(){
   // Default the dropdown to the current game, or Red · Blue on a fresh run — never to
@@ -2423,7 +2533,7 @@ function addArea(){
 }
 
 function viewBox(){
-  const b = boxed();
+  const b = boxed().filter(m => !m.retired);
   if (!b.length) return `<h2 class="sec">The Box</h2><div class="empty">
     <span class="big">📦</span>Bench is empty.<br>Nothing here gets released — ever.</div>` + memorial();
 
@@ -2443,11 +2553,18 @@ function viewBox(){
   } else {
     h += b.slice().sort((a,c)=>c.caughtAt-a.caughtAt).map(row).join('');
   }
-  h += memorial();
+  h += retiredSection() + memorial();
   return h;
 }
 
 // Permadeath only: the fallen live here permanently. Never released (Rule 13).
+function retiredSection(){
+  const r = retiredList().filter(m => m.status !== 'fallen');
+  if (!r.length) return '';
+  return `<h2 class="sec" style="color:var(--gold)">Retired — ${r.length}
+      <span class="tip">fainted at a wall; still yours, done competing</span></h2>` +
+    r.slice().sort((a,b)=>(b.retiredAt||0)-(a.retiredAt||0)).map(row).join('');
+}
 function memorial(){
   const f = fallen();
   if (!f.length) return '';
@@ -2464,7 +2581,8 @@ function row(m){
     ${portrait(m,'sm')}
     <div class="info" onclick="openDetail(${m.id})">
       <div class="nick">${m.shiny?'✨ ':''}${esc(m.nick)} ${genderMark(m.gender)}${
-        isStray(m) ? ` <span style="color:var(--gold);font-size:11px;font-weight:800">🧬 STRAY</span>` : ''}</div>
+        m.retired ? ` <span style="color:var(--gold);font-size:11px;font-weight:800">⚰️ RETIRED</span>`
+        : isStray(m) ? ` <span style="color:var(--gold);font-size:11px;font-weight:800">🧬 STRAY</span>` : ''}</div>
       <div class="meta">${esc(pretty(m.species))}${m.level?` · Lv ${m.level}`:''}${
         m.ability?` · ${esc(m.ability)}`:''}${
         m.nature?` · ${esc(m.nature)} ${natureShort(m.nature)}`:''}${m.where?` · ${esc(m.where)}`:''}${
@@ -3243,6 +3361,10 @@ function doEvolve(id, to){
 function swapIn(id){
   const m = mon(id);
   if (!m || m.status === 'party' || m.status === 'fallen') return;
+  if (m.retired){
+    alert(`${m.nick} is retired — it fainted at a Major Battle and is done competing (Rule 40).`);
+    return;
+  }
   if (!pureFor(m)){
     alert(`${m.nick} doesn't share lineage ${m.slot}'s ${pretty(houseType(m.slot))} type, so it's
 a Stray — it keeps the number but never takes the chair (Rule 33).`);

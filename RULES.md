@@ -66,14 +66,18 @@ Every Nuzlocke run eventually becomes the same story: you get attached, somethin
 
 **Rule 8 — Pick a mode before you take a single step, and it's binding.** Lineagelock runs in one of two modes, chosen at setup and locked for the whole run. Declare it in the tracker before your first catch. No switching halfway because a gym went badly.
 
-| | **🔁 Rotation** | **☠️ Permadeath** |
-|---|---|---|
-| A Pokémon faints | Heals up, keeps its chair | It's **Fallen** — out of the run for good |
-| Your team shrinks | Never | Yes, until the die replaces it |
-| The run can be lost | No | Yes |
-| Feels like | A relaxed, chaotic team-builder | A Nuzlocke with a dice-driven roster |
+| | **🔁 Rotation** | **⚰️ Retirement** | **☠️ Permadeath** |
+|---|---|---|---|
+| Faints on a route | Nothing | Nothing | It's **Fallen** |
+| Faints at a Major Battle | Tour ends early | **Retired** — never fields again | It's **Fallen** |
+| Your team shrinks | Never | Only at walls | Yes, anywhere |
+| A lineage can die out | No | Yes | Yes |
+| The run can be lost | No | Yes | Yes |
+| Feels like | A relaxed, chaotic team-builder | Rotation with teeth | A Nuzlocke with a dice-driven roster |
 
-Everything else in this document — the die, the six lineages, the encounter rules, the naming, the battle order — is **identical in both modes**. The mode only decides what a faint costs you.
+There is also a third option that sits between them — **⚰️ Retirement** (Rule 40).
+
+Everything else in this document — the die, the six lineages, the encounter rules, the naming, the battle order — is **identical in every mode**. The mode only decides what a faint costs you.
 
 #### 🔁 Rotation mode
 
@@ -276,6 +280,35 @@ Only the categories your game actually has are offered — Alola shows no Gyms r
 **Why you'd want this.** A **gyms-only** run is the gentlest version: eight walls, eight cap steps, and tours that last a long time in real playing hours. Adding rivals roughly doubles the number of majors and makes Rotation churn hard. Counting everything is the longest, most turbulent version of the run and the most likely to show you your whole Box. Pick the one that matches how much upheaval you actually want, rather than taking whatever the game happens to contain.
 
 **Locked once you start.** Beaten counts and the cap are both derived from this, so like every other dial it fixes itself at your first catch.
+
+**Rule 39 — Presets.** Between the three modes, four encounter rules, seven dials and eight battle categories there are more configurations of this ruleset than anyone needs. Five named starting points cover the shapes worth playing:
+
+| | Sets |
+|---|---|
+| 🌱 **Vanilla** | Rotation · first encounter · badges and the League only · no dials |
+| ☠️ **Classic Nuzlocke** | Permadeath · first encounter · every wall counts · level cap on |
+| 🧬 **Dynasty** | Rotation · Audition · bloodline purity · 1d8 tours · level cap |
+| 🌪️ **Chaos** | Rotation · the wheel · random succession · 1d4 tours · method lock · level cap |
+| 🌍 **First Playthrough** | Rotation · Catch 'em All · badges and the League only · traditional starter |
+
+A preset is a starting point, not a cage: every switch stays adjustable afterwards, and changing one just means the run no longer carries that preset's name. **Your game is never touched** — that is always your own choice.
+
+If you have never played this before, take **Vanilla**. It is the version with the fewest moving parts that still feels like the challenge, and you can turn things on once you know which parts you want more of.
+
+**Rule 40 — ⚰️ Retirement mode (the third mode).** A Pokémon that faints **during a Major Battle** is **Retired**: permanently out of competition. It stays yours, it stays in the Box, and it never takes a chair again. A faint **anywhere else** — a route, a trainer, a cave — costs you absolutely nothing.
+
+This is the middle of the two original modes, and for a lot of people it is the one they actually wanted:
+
+- **Rotation's weakness** is that nothing is ever really lost, so the churn is bookkeeping rather than drama.
+- **Permadeath's weakness** is that one critical hit from a Zubat on Route 6 can end a Pokémon you had built the run around.
+- **Retirement puts the cost exactly where the tension already is.** You were nervous walking into that gym anyway. Now that nervousness means something, and the forty minutes of route grinding beforehand don't.
+
+Mechanically it is Rotation with Rule 27 made permanent. Tours still run and still tick, but being **Winded at a wall is final** — the Pokémon leaves the chair immediately and is retired rather than benched. Two consequences worth knowing:
+
+- **There is no re-enlisting.** In Rotation an only child that faints simply rolls a fresh tour and stays. In Retirement it retires, and if the lineage has nobody else that chair is **empty for the rest of the run** unless the die hands that number to a new catch.
+- **A lineage can genuinely die out**, which makes Bloodline Purity (Rule 33) far sharper: a dynasty that loses its last eligible member at a gym is over, and the number is open to be refounded by whatever rolls it next.
+
+The run ends if you have nobody left who can be fielded. Retired Pokémon are listed separately from the Fallen in the Box, because they are not dead — they have just done their fighting.
 ## 3. Quick Reference
 
 *Everything you need mid-run, on one screen. Rule numbers in brackets if you want the detail.*
@@ -373,6 +406,8 @@ The starter options and the level cap used to live here; they're now Rules 36 an
 - **Multiple runs at once** — tap the run name in the header to switch. Every run keeps its own party, Box, history, game, mode, encounter rule and naming theme, so a relaxed Rotation run through FireRed and a Permadeath Decay run can sit side by side without touching each other. Rename, reset or delete any of them from the same screen.
 
 - **Run setup** — four steps before your first catch: **mode** (🔁 Rotation or ☠️ Permadeath), **game**, **encounter rule** (👣 First encounter · 🎬 Audition · 🎡 Spin the wheel · 🌍 Catch 'em all) and the **dials**. Everything locks itself the moment you catch something, exactly as Rules 8 and 15 require.
+- **Presets** — a ⚡ row above the setup steps with five named starting points (Rule 39). One tap sets the mode, the encounter rule, the battle scope and all seven dials; the row then shows which preset you are on, and clears itself the moment you change anything by hand.
+- **Retirement mode** — the faint prompt says outright that anyone you tick is retired for good, and the Box grows a **Retired** section, separate from the Fallen memorial, for Pokémon that are still yours but done competing (Rule 40).
 - **Which battles count** — a setup step listing only the categories your game has, with how many battles each one holds. Switch rivals or the League off and the Progress tab greys them out as *not counted this run*: still tickable, but no longer moving the cap or ticking tours (Rule 38).
 - **The seven dials** (⚙️ on the setup screen) — level cap, random succession, tour length, bloodline purity, method lock, shiny clause and starter style, per Rules 29–30 and 32–36. Each one says what it does before you switch it on, and the setup card lists whichever you've enabled.
 - **The encounter wheel** — pick your area and how you're looking (grass, surfing, each rod), then spin a weighted wheel built from that area's real encounter table. It names your target, logs the odds it came up at, and hands the species straight into the catch flow. **1,128 locations across 15 games**, floors already folded together.
