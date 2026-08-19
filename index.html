@@ -134,7 +134,9 @@
   .nextup .beat:active{filter:brightness(.9)}
   .nextup .beat.locked{background:var(--card2);color:var(--dim)}
   .chip.term{color:#9fd0ff;background:#152b44;top:auto;bottom:9px;right:auto;left:9px}
-  .chip.roll{color:#ffd479;background:#3a2e14;top:auto;bottom:9px;right:auto;left:9px}
+  .chip.roll{color:#ffd479;background:#3a2e14;top:auto;bottom:9px;right:auto;left:9px;
+    cursor:pointer;border:1px solid #6b5320}
+  .chip.roll:active{background:#4a3a18}
   .nextup.roll{border-left-color:#ffd479}
   .chip.wind{color:#ffd479;background:#3a2e14;top:auto;bottom:9px;right:auto;left:9px}
   .wtick{font-size:18px;width:24px;text-align:center}
@@ -1521,7 +1523,9 @@ function viewParty(){
         ${bench?`<div class="chip depth">+${bench}</div>`:''}
         ${m.winded ? '<div class="chip wind">💨 tour over</div>'
           : m.term === 0 ? '<div class="chip wind">📜 tour up</div>'
-          : m.term == null && tours() ? '<div class="chip roll">⏳ roll tour</div>'
+          : m.term == null && tours()
+            ? `<div class="chip roll" title="Roll this Pokémon's tour"
+                onclick="event.stopPropagation();rollTourFor(${m.id})">🎲 roll tour</div>`
           : tours() ? `<div class="chip term">📜 ${m.term}</div>` : ''}
       </div>`;
     } else {
@@ -3440,8 +3444,8 @@ function openDetail(id){
         : m.term === 0 ? '<span style="color:var(--gold)">up — hands over at the next PC</span>'
         : m.term == null ? '<span style="color:var(--dim)">not rolled yet</span>'
         : `<b>${m.term}</b> major${m.term===1?'':'s'} left`}
-        <button class="sw" style="margin-left:8px;padding:2px 10px"
-          onclick="closeSheet();rollTourFor(${id})">🎲 ${m.term == null ? 'roll' : 're-roll'}</button>
+        ${m.term == null ? `<button class="sw" style="margin-left:8px;padding:2px 10px"
+          onclick="closeSheet();rollTourFor(${id})">🎲 roll</button>` : ''}
         </dd>` : ''}
       <dt>Status</dt><dd>${m.status==='party'
         ? '<span style="color:var(--green)">In party</span>'
