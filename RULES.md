@@ -21,7 +21,7 @@ Every Nuzlocke run eventually becomes the same story: you get attached, somethin
 **Before you take your first step:**
 
 1. **Setup 1 — Declare your game, not your starter.** Pick your game in the tracker before you do anything else — it lays out that game's entire major-battle run so you always know what the next wall is. Playing a ROM hack, fan game or randomiser? Choose **ROM hack / fan game** and the checklist steps aside; every other rule works identically. What you do *not* get to pick is your starter — the die does that (Rule 14). Do not decide in advance who you're hoping for. It won't help.
-2. **Setup 2 — Choose your mode: 🔁 Rotation or ☠️ Permadeath.** This is the one decision you make before anything else and it's locked for the run (Rule 8). Rotation is the relaxed version where a faint costs you nothing. Permadeath is the Nuzlocke version where a faint is final and your team can shrink. Set it in the tracker on the run-setup screen; it refuses to let you change it once you've caught your first Pokémon.
+2. **Setup 2 — Choose your mode: 🔁 Rotation, ⚰️ Retirement or ☠️ Permadeath.** This is the one decision you make before anything else and it's locked for the run (Rule 8). Rotation is the relaxed version where a faint costs you nothing. Retirement takes a Pokémon out of the run **only if it faints at a Major Battle** — route and trainer faints are free. Permadeath is the Nuzlocke version where **any** faint is final and your team can shrink anywhere. Set it in the tracker on the run-setup screen; it refuses to let you change it once you've caught your first Pokémon.
 3. **Setup 3 — Choose your encounter rule: 👣 First Encounter, 🎬 Audition, 🎡 Spin the Wheel or 🌍 Catch 'em All.** Also locked for the run (Rule 15). First Encounter is the classic and works on anything. Audition gives you three encounters per area and lets you keep one of them — choice without abundance. Catch 'em All lifts the per-area limit entirely and lets the die alone do the filtering — the friendly option for a first run. The wheel uses each area's real encounter table and appearance rates to name your target — bundled for 15 mainline games; if your game isn't one of them the tracker says so and you use First Encounter.
 4. **Setup 4 — Clear the decks.** Start a fresh save file. No trading in outside Pokémon, no item transfers from other saves, no Pokémon HOME care packages.
 5. **Setup 5 — The die lives on your desk.** In view, in reach, all run. Every catch is a roll, and the roll happens *immediately* — before you name it, before you box it, before you look at its IVs.
@@ -85,7 +85,9 @@ Everything else in this document — the die, the six lineages, the encounter ru
 
 #### ☠️ Permadeath mode
 
-**Rule 10 — A faint is final.** A Pokémon that faints in battle is **Fallen**: permanently ineligible for the party for the rest of the run. It stays yours and stays in the Box forever as a memorial — you just can't field it again, ever.
+**Rule 10 — A faint is final, wherever it happens.** A Pokémon that faints in **any** battle is **Fallen**: permanently ineligible for the party for the rest of the run. It stays yours and stays in the Box forever as a memorial — you just can't field it again, ever.
+
+**Any** battle means any: the Champion, a gym leader, a route trainer with two Zubats, a wild Pokémon that crits, or poison ticking down on the last step to a Pokémon Centre. There is no such thing as a cheap death here. **This is the whole difference between Permadeath and ⚰️ Retirement (Rule 40)** — Retirement only takes Pokémon that go down at a Major Battle, and lets every other faint pass. If losing a Pokémon to a Rattata sounds intolerable rather than dramatic, you want Retirement, not this.
 
 **Rule 11 — Succession runs down the lineage.** When a Pokémon falls, its chair may only be refilled by **another living Pokémon of that same Slot Number** (Rule 5, unchanged — numbers still never mix). If that lineage has no living members left, the chair stays **empty** until the die hands that number to a new catch. A stacked lineage is now literal insurance; a lineage one deep is a single point of failure.
 
@@ -296,6 +298,8 @@ A preset is a starting point, not a cage: every switch stays adjustable afterwar
 If you have never played this before, take **Vanilla**. It is the version with the fewest moving parts that still feels like the challenge, and you can turn things on once you know which parts you want more of.
 
 **Rule 40 — ⚰️ Retirement mode (the third mode).** A Pokémon that faints **during a Major Battle** is **Retired**: permanently out of competition. It stays yours, it stays in the Box, and it never takes a chair again. A faint **anywhere else** — a route, a trainer, a cave — costs you absolutely nothing.
+
+**The contrast with Permadeath in one line:** Permadeath asks *did it faint?* Retirement asks *did it faint at a wall?* Everything else about the two is identical — the Pokémon is kept, boxed and never fielded again either way.
 
 This is the middle of the two original modes, and for a lot of people it is the one they actually wanted:
 

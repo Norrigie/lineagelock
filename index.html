@@ -1576,8 +1576,9 @@ function modeName(){
 function openModePicker(){
   const locked = S.mons.length > 0;
   sheet(`<h3>Choose your mode</h3>
-    <p class="note" style="margin:0 0 14px">What does a faint cost you? Everything else about
-      Lineagelock is identical either way. ${locked
+    <p class="note" style="margin:0 0 14px">What does a faint cost you, and <b>where</b>? That second
+      half is the real difference: Retirement only counts faints at a Major Battle, Permadeath counts
+      every faint anywhere. Everything else about Lineagelock is identical in all three. ${locked
         ? '<b style="color:var(--gold)">Locked — this run has already started (Rule 8).</b>'
         : 'Locked in once you catch your first Pokémon.'}</p>
     <div class="modecard ${S.mode==='rotation'?'on':''}" ${locked?'':'onclick="setMode(\'rotation\')"'}>
@@ -1593,8 +1594,10 @@ function openModePicker(){
     </div>
     <div class="modecard ${S.mode==='permadeath'?'on':''}" ${locked?'':'onclick="setMode(\'permadeath\')"'}>
       <div class="mhead">☠️ Permadeath<span>${S.mode==='permadeath'?'CURRENT':''}</span></div>
-      <div class="mbody">A faint is final. The Pokémon is <b>Fallen</b> and its chair passes to the next
-        living member of that same lineage — or sits empty until the die refills it. The run can be lost.</div>
+      <div class="mbody"><b>Any</b> faint is final, anywhere — a gym leader, a route trainer, a wild
+        crit, poison on the way to a Centre. The Pokémon is <b>Fallen</b> and its chair passes to the
+        next living member of that lineage, or sits empty until the die refills it. The run can be
+        lost. If you only want walls to cost you, pick Retirement above.</div>
     </div>
     <div class="acts"><button class="btn ghost" onclick="closeSheet()">${locked?'Close':'Cancel'}</button></div>`);
 }
