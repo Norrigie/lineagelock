@@ -994,17 +994,37 @@ function wallName(){
   const nx = nextMajor();
   return nx ? nx.b[0] : '';
 }
-const capConfirmed = () => { const k = wallKey(); return !k || !!S.capOK[k]; };
 
 function capNum(){ const n = parseInt(S.cap, 10); return isFinite(n) && n > 0 ? n : null; }
 // Ace levels ship with most games (scraped from Serebii); Decay's come from its dev sheet.
 // The ace level of one battle, honouring a correction you have made for that wall.
-function aceAt(i){
-  const b = battleList()[i];
-  if (offList(b)) return 0;
+// The key a wall's confirmation and correction live under. A Rule 37 chain counts as one wall.
+function battleKey(i){
   const c = chainAt(i);
-  const fix = S.capFix[c ? 'g' + c[0] + '-' + c[1] : 'b' + i];
-  return fix != null ? fix : (b[4] || 0);
+  return c ? 'g' + c[0] + '-' + c[1] : 'b' + i;
+}
+function battleName(i){
+  const list = battleList();
+  const c = chainAt(i);
+  if (c){
+    for (let j = c[1]; j >= c[0]; j--)
+      if (list[j][3] === 'champ') return 'the Elite Four and ' + list[j][0];
+    return list[c[0]][0] + ' \u2192 ' + list[c[1]][0];
+  }
+  return list[i] ? list[i][0] : '';
+}
+// The ace of one wall as it stands, including any correction you have made for it.
+function aceAt(i){
+  const list = battleList();
+  const b = list[i];
+  if (offList(b)) return 0;
+  const fix = S.capFix[battleKey(i)];
+  if (fix != null) return fix;
+  const c = chainAt(i);
+  if (!c) return b[4] || 0;
+  let top = 0;                        // a chain's ace is its strongest member
+  for (let j = c[0]; j <= c[1]; j++) if (!offList(list[j])) top = Math.max(top, list[j][4] || 0);
+  return top;
 }
 // The ace of the wall in front of you, on its own — a chain counts as its strongest member.
 function wallAce(){
@@ -1043,102 +1063,93 @@ function overCap(){
   return party().filter(m => parseInt(m.level, 10) > c);
 }
 // Fired once per wall from postBattleFlow. Yes locks the shipped number in; No takes yours.
-function confirmCap(){
-  const k = wallKey();
-  if (!k){ closeSheet(); return; }
-  const lv = wallAce();
-  const cap = knownAce();
-  if (lv == null) return askCap();          // nothing on file at all — just ask for the number
-  sheet(`<h3>📏 Cap for ${esc(wallName())}</h3>
-    <p class="note" style="margin:0 0 4px">Next up is <b>${esc(wallName())}</b>, and we have that
-      ace at <b>Lv ${lv}</b>${gauntlet() ? ' — the highest in the whole run, since it counts as one wall (Rule 37)' : ''}.</p>
-    ${cap > lv
-      ? `<div style="display:flex;gap:10px;margin:12px 0">
-          <div style="flex:1;text-align:center;border:1px solid var(--line);border-radius:12px;padding:8px 4px">
-            <div style="font-size:10px;font-weight:900;letter-spacing:1px;color:var(--dim)">ITS ACE</div>
-            <div style="font-size:34px;font-weight:900;line-height:1.15">Lv ${lv}</div></div>
-          <div style="flex:1;text-align:center;border:1px solid var(--gold);border-radius:12px;padding:8px 4px">
-            <div style="font-size:10px;font-weight:900;letter-spacing:1px;color:var(--gold)">YOUR CAP</div>
-            <div style="font-size:34px;font-weight:900;line-height:1.15;color:var(--gold)">Lv ${cap}</div></div>
-        </div>
-        <p class="note" style="margin:0 0 4px">The cap is held above this wall because you have
-          already beaten a stronger one, and a cap never drops (Rule 29). Play to <b>Lv ${cap}</b>.</p>`
-      : `<div style="text-align:center;font-size:44px;font-weight:900;color:var(--gold);
-          line-height:1.1;margin:10px 0">Lv ${lv}</div>`}
-    <p class="note" style="margin:0 0 12px">Is that ace right? Answer once and it is remembered
-      for the rest of the run.</p>
+function confirmCap(i){
+  const lv = aceAt(i);
+  const who = battleName(i);
+  if (!lv) return askCap(i);            // nothing on file — ask what it actually was
+  sheet(`<h3>\u{1F4CF} ${esc(who)} \u2014 ace level</h3>
+    <p class="note" style="margin:0 0 4px">You have just fought <b>${esc(who)}</b>, so you saw
+      the team. We have that ace at:</p>
+    <div style="text-align:center;font-size:44px;font-weight:900;color:var(--gold);
+      line-height:1.1;margin:10px 0">Lv ${lv}</div>
+    <p class="note" style="margin:0 0 12px">Was that right? Answering once settles it for the
+      rest of the run \u2014 and because a cap never drops (Rule 29), a correction here can still
+      change the cap you play under next.</p>
     <div class="acts">
-      <button class="btn" onclick="acceptCap()">✓ Yes, Lv ${lv}</button>
+      <button class="btn" onclick="acceptCap(${i})">\u2713 Yes, Lv ${lv}</button>
     </div>
     <div class="acts">
-      <button class="btn ghost" onclick="correctCap()">✎ No — the real level is…</button>
+      <button class="btn ghost" onclick="correctCap(${i})">\u270E No \u2014 it was actually\u2026</button>
     </div>`);
 }
-function acceptCap(){
-  const k = wallKey();
-  if (!k) return closeSheet();
-  S.capOK[k] = true;
-  S.cap = String(knownAce());
-  logIt('📏', `Cap <b>Lv ${S.cap}</b> for <b>${esc(wallName())}</b>, confirmed. Won't ask again.`);
-  save(); render(); closeSheet();
-  if (discharged().length) rotateGate();
+function acceptCap(i){
+  S.capOK[battleKey(i)] = true;
+  logIt('\u{1F4CF}', `<b>${esc(battleName(i))}</b>\u2019s ace confirmed at <b>Lv ${aceAt(i)}</b>.
+    Won\u2019t ask again.`);
+  capSettled();
 }
-function correctCap(){
-  const lv = wallAce();
-  sheet(`<h3>📏 ${esc(wallName())}'s real ace level</h3>
-    <p class="note" style="margin:0 0 10px">We had <b>Lv ${lv == null ? '—' : lv}</b>. What is it
-      actually? This overrides the bundled figure for the rest of the run.</p>
+function correctCap(i){
+  const lv = aceAt(i);
+  sheet(`<h3>\u{1F4CF} ${esc(battleName(i))}\u2019s real ace</h3>
+    <p class="note" style="margin:0 0 10px">We had <b>Lv ${lv || '\u2014'}</b>. What was the
+      highest level on that team? This replaces the bundled figure for the rest of the run.</p>
     <label for="capIn">Ace level</label>
     <input type="number" id="capIn" min="1" max="100" inputmode="numeric" value="${esc(lv || '')}">
     <div class="acts">
-      <button class="btn ghost" onclick="confirmCap()">← Back</button>
-      <button class="btn" onclick="saveCapFix()">Save</button>
+      <button class="btn ghost" onclick="confirmCap(${i})">\u2190 Back</button>
+      <button class="btn" onclick="saveCapFix(${i})">Save</button>
     </div>`);
   setTimeout(()=>{ const el = document.getElementById('capIn'); if (el){ el.focus(); el.select(); } }, 120);
 }
-function saveCapFix(){
-  const k = wallKey();
+function saveCapFix(i){
   const v = parseInt((document.getElementById('capIn') || {}).value, 10);
-  if (!k || !isFinite(v) || v < 1 || v > 100) return;
-  S.capFix[k] = v;
-  S.capOK[k] = true;
-  S.cap = String(v);
-  logIt('📏', `Cap corrected to <b>Lv ${v}</b> for <b>${esc(wallName())}</b> — the bundled figure
-    was wrong. Won't ask again.`);
-  save(); render(); closeSheet();
-  if (discharged().length) rotateGate();
+  if (!isFinite(v) || v < 1 || v > 100) return;
+  const was = aceAt(i);
+  S.capFix[battleKey(i)] = v;
+  S.capOK[battleKey(i)] = true;
+  logIt('\u{1F4CF}', `<b>${esc(battleName(i))}</b>\u2019s ace corrected: Lv ${was} \u2192
+    <b>Lv ${v}</b>. Won\u2019t ask again.`);
+  capSettled();
 }
-
-function askCap(){
-  const nx = nextMajor();
-  const g = gauntlet();
-  sheet(`<h3>📏 Level cap</h3>
-    <p class="note" style="margin:0 0 10px">${g
-      ? `You're at <b>${esc(gauntletName())}</b>, which counts as <b>one wall</b> — there's no PC
-         between them, so a single cap covers the whole run and it's the highest ace in it
-         (Rule 37). Levelling up during the gauntlet is free.`
-      : nx
-      ? `What level is <b>${esc(nx.b[0])}</b>'s highest Pokémon? Nobody may go above it.`
-      : 'No major battles left — set a cap if you still want one.'}</p>
-    <label for="capIn">Cap level</label>
+// Recompute the cap for whatever comes next, report it if it moved, then continue the flow.
+function capSettled(){
+  const before = S.cap;
+  syncCap();
+  if (nextMajor() && String(before) !== String(S.cap))
+    logIt('\u{1F4CF}', `Cap now <b>Lv ${S.cap}</b> heading into <b>${esc(wallName())}</b>.`);
+  save(); render();
+  if (overCap().length) return rotateGate();
+  closeSheet();
+}
+function askCap(i){
+  const known = (i != null && i >= 0);
+  const who = known ? battleName(i) : wallName();
+  const guess = known ? aceAt(i) : (knownAce() || S.cap);
+  sheet(`<h3>\u{1F4CF} ${esc(who)} \u2014 ace level</h3>
+    <p class="note" style="margin:0 0 10px">${known
+      ? `Nothing on file for <b>${esc(who)}</b>. What was the highest level on that team? Your
+         cap is the highest ace you have faced (Rule 29), so this sets it.`
+      : `What level is <b>${esc(who)}</b>\u2019s highest Pok\u00e9mon? Nobody may go above it.`}</p>
+    <label for="capIn">Ace level</label>
     <input type="number" id="capIn" min="1" max="100" inputmode="numeric"
-      value="${esc(knownAce() || S.cap)}" placeholder="e.g. 14">
-    ${knownAce() ? '<p class="note" style="margin:8px 0 0">Filled in from the bundled data for this game.</p>'
-      : '<p class="note" style="margin:8px 0 0">No ace level on file for this battle — check it in-game and type it in.</p>'}
+      value="${esc(guess || '')}" placeholder="e.g. 14">
     <div class="acts">
       <button class="btn ghost" onclick="closeSheet()">Cancel</button>
-      <button class="btn" onclick="setCap()">Set cap</button>
+      <button class="btn" onclick="setCap(${known ? i : -1})">Save</button>
     </div>`);
-  setTimeout(()=>document.getElementById('capIn').focus(), 120);
+  setTimeout(()=>{ const el = document.getElementById('capIn'); if (el){ el.focus(); el.select(); } }, 120);
 }
-function setCap(){
-  const v = document.getElementById('capIn').value.trim();
-  const lv = parseInt(v, 10);
-  S.cap = v;
-  // Remember it against this wall, so a game with no bundled ace levels is asked once too.
-  const k = wallKey();
-  if (k && isFinite(lv) && lv > 0){ S.capFix[k] = lv; S.capOK[k] = true; }
-  logIt('📏', `Level cap set to <b>Lv ${esc(v)}</b>${wallName()?` for ${esc(wallName())}`:''}. Won't ask again.`);
+function setCap(i){
+  const lv = parseInt((document.getElementById('capIn') || {}).value, 10);
+  if (!isFinite(lv) || lv < 1 || lv > 100) return;
+  const known = (i != null && i >= 0);
+  // Store against the wall it describes: the one just fought when we know it, else the next.
+  const k = known ? battleKey(i) : wallKey();
+  if (k){ S.capFix[k] = lv; S.capOK[k] = true; }
+  logIt('\u{1F4CF}', `<b>${esc(known ? battleName(i) : wallName())}</b>\u2019s ace recorded as
+    <b>Lv ${lv}</b>. Won\u2019t ask again.`);
+  if (known) return capSettled();
+  S.cap = String(lv);
   save(); render(); closeSheet();
   if (overCap().length) rotateGate();
 }
@@ -1972,7 +1983,7 @@ function toggleBattle(i){
   const done = chainEnd(i);
   const counts = !offList(b);                 // out of scope: tick it, but it changes nothing
   if (done && counts && tours()) tickTours();
-  capPending = done && counts;
+  capPending = (done && counts) ? i : null;
   save(); render();
   if (!done){
     const c = chainAt(i);
@@ -2026,18 +2037,16 @@ function rollTourFor(id){
       if (next) rollTourFor(next.id); else postBattleFlow();
     }, S.tourDie);
 }
-let capPending = false;      // set when a major is beaten, consumed by the sequence below
+let capPending = null;       // index of the major just beaten, consumed by the sequence below
 function postBattleFlow(){
   if (discharged().length) return rotateGate();
   if (needsTour().length) return openTourRolls();
-  if (capPending && S.levelCap){
-    capPending = false;
-    if (!nextMajor()){ closeSheet(); return; }        // run's over, nothing left to cap
-    if (!capConfirmed()) return confirmCap();         // ask once per wall, then never again
-    if (syncCap()) logIt('📏', `Cap now <b>Lv ${S.cap}</b> for <b>${esc(wallName())}</b>.`);
-    save(); render();
-    if (overCap().length) return rotateGate();
-    closeSheet(); return;
+  if (capPending != null && S.levelCap){
+    const i = capPending; capPending = null;
+    // Ask about the wall just fought — the only one you can actually vouch for.
+    if (!S.capOK[battleKey(i)]) return confirmCap(i);
+    capSettled();
+    return;
   }
   closeSheet();
 }
