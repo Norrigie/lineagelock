@@ -21,7 +21,7 @@ Every Nuzlocke run eventually becomes the same story: you get attached, somethin
 **Before you take your first step:**
 
 1. **Setup 1 — Declare your game, not your starter.** Pick your game in the tracker before you do anything else — it lays out that game's entire major-battle run so you always know what the next wall is. Playing a ROM hack, fan game or randomiser? Choose **ROM hack / fan game** and the checklist steps aside; every other rule works identically. What you do *not* get to pick is your starter — the die does that (Rule 14). Do not decide in advance who you're hoping for. It won't help.
-2. **Setup 2 — Choose your mode: 🔁 Rotation, ⚰️ Retirement or ☠️ Permadeath.** This is the one decision you make before anything else and it's locked for the run (Rule 8). Rotation is the relaxed version where a faint costs you nothing. Retirement takes a Pokémon out of the run **only if it faints at a Major Battle** — route and trainer faints are free. Permadeath is the Nuzlocke version where **any** faint is final and your team can shrink anywhere. Set it in the tracker on the run-setup screen; it refuses to let you change it once you've caught your first Pokémon.
+2. **Setup 2 — Choose your mode: 🔓 Open Lineage, 🔁 Rotation, ⚰️ Retirement or ☠️ Permadeath.** This is the one decision you make before anything else and it's locked for the run (Rule 8). Open Lineage is the lightest of the four: the die decides who you own and which number they carry, and then leaves the timing entirely to you (Rule 41). Rotation adds a tour of duty, so the die also decides how long anyone keeps their chair, though a faint still costs you nothing. Retirement takes a Pokémon out of the run **only if it faints at a Major Battle** — route and trainer faints are free. Permadeath is the Nuzlocke version where **any** faint is final and your team can shrink anywhere. Set it in the tracker on the run-setup screen; it refuses to let you change it once you've caught your first Pokémon.
 3. **Setup 3 — Choose your encounter rule: 👣 First Encounter, 🎬 Audition, 🎡 Spin the Wheel or 🌍 Catch 'em All.** Also locked for the run (Rule 15). First Encounter is the classic and works on anything. Audition gives you three encounters per area and lets you keep one of them — choice without abundance. Catch 'em All lifts the per-area limit entirely and lets the die alone do the filtering — the friendly option for a first run. The wheel uses each area's real encounter table and appearance rates to name your target — bundled for 15 mainline games; if your game isn't one of them the tracker says so and you use First Encounter.
 4. **Setup 4 — Clear the decks.** Start a fresh save file. No trading in outside Pokémon, no item transfers from other saves, no Pokémon HOME care packages.
 5. **Setup 5 — The die lives on your desk.** In view, in reach, all run. Every catch is a roll, and the roll happens *immediately* — before you name it, before you box it, before you look at its IVs.
@@ -64,24 +64,26 @@ Every Nuzlocke run eventually becomes the same story: you get attached, somethin
 
 ### B. Choose Your Mode
 
-**Rule 8 — Pick a mode before you take a single step, and it's binding.** Lineagelock runs in one of two modes, chosen at setup and locked for the whole run. Declare it in the tracker before your first catch. No switching halfway because a gym went badly.
+**Rule 8 — Pick a mode before you take a single step, and it's binding.** Lineagelock runs in one of four modes, chosen at setup and locked for the whole run. Declare it in the tracker before your first catch. No switching halfway because a gym went badly.
 
-| | **🔁 Rotation** | **⚰️ Retirement** | **☠️ Permadeath** |
-|---|---|---|---|
-| Faints on a route | Nothing | Nothing | It's **Fallen** |
-| Faints at a Major Battle | Tour ends early | **Retired** — never fields again | It's **Fallen** |
-| Your team shrinks | Never | Only at walls | Yes, anywhere |
-| A lineage can die out | No | Yes | Yes |
-| The run can be lost | No | Yes | Yes |
-| Feels like | A relaxed, chaotic team-builder | Rotation with teeth | A Nuzlocke with a dice-driven roster |
+| | **🔓 Open Lineage** | **🔁 Rotation** | **⚰️ Retirement** | **☠️ Permadeath** |
+|---|---|---|---|---|
+| What forces a change | **Nothing** | Tours run out (Rule 26) | Tours, and walls take Pokémon | Tours, and faints take Pokémon |
+| When you may swap | **Whenever you like** | At a PC, when the die says so | At a PC, when the die says so | At a PC, or when a chair empties |
+| Faints on a route | Nothing | Nothing | Nothing | It's **Fallen** |
+| Faints at a Major Battle | Nothing | Tour ends early | **Retired** — never fields again | It's **Fallen** |
+| Your team shrinks | Never | Never | Only at walls | Yes, anywhere |
+| A lineage can die out | No | No | Yes | Yes |
+| The run can be lost | No | No | Yes | Yes |
+| Feels like | A normal playthrough with a numbered roster | A relaxed, chaotic team-builder | Rotation with teeth | A Nuzlocke with a dice-driven roster |
 
-There is also a third option that sits between them — **⚰️ Retirement** (Rule 40).
+Two axes, then, not one: **🔓 Open Lineage** and **🔁 Rotation** differ over *what forces your six to change*, while **⚰️ Retirement** (Rule 40) and **☠️ Permadeath** differ over *what a faint costs you*. Read down the first two rows for the first question and the next two for the second.
 
-Everything else in this document — the die, the six lineages, the encounter rules, the naming, the battle order — is **identical in every mode**. The mode only decides what a faint costs you.
+Everything else in this document — the die, the six lineages, the encounter rules, the naming, the battle order — is **identical in every mode**.
 
-#### 🔁 Rotation mode
+#### 🔓 Open Lineage and 🔁 Rotation modes
 
-**Rule 9 — Fainting is just fainting.** A Pokémon that faints is healed at a Pokémon Center like in any normal playthrough. It is never released, never dead, never boxed against your will, never marked unusable. It keeps its slot, keeps its number, and keeps its job. Your six only ever change because *you* rotate them.
+**Rule 9 — Fainting is just fainting.** A Pokémon that faints is healed at a Pokémon Center like in any normal playthrough. It is never released, never dead, never boxed against your will, never marked unusable. It keeps its slot, keeps its number, and keeps its job. Your six only ever change because *you* rotate them — or, in Rotation, because a tour ran out (Rule 26). Open Lineage has no tours at all, so there it really is only you (Rule 41).
 
 #### ☠️ Permadeath mode
 
@@ -93,7 +95,7 @@ Everything else in this document — the die, the six lineages, the encounter ru
 
 **Rule 12 — The run can actually end.** If every Pokémon you own is Fallen, the run is over — write it up and post the death toll. Short of that, an empty chair or three is survivable: you fight understrength and hope the die is kind.
 
-**Rule 13 — Nothing is ever released.** Both modes. Not for fainting, not for being bad, not for being your ninth Zubat. In Rotation mode the Box is a bench; in Permadeath mode it's a bench *and* a graveyard. Nobody gets thrown away.
+**Rule 13 — Nothing is ever released.** Every mode. Not for fainting, not for being bad, not for being your ninth Zubat. In Rotation mode the Box is a bench; in Permadeath mode it's a bench *and* a graveyard. Nobody gets thrown away.
 
 ### C. Catching
 
@@ -152,11 +154,11 @@ Set the gender first and the roll respects it, using the same masculine / femini
 
 ### E. Battling & Stakes
 
-What a battle costs you depends entirely on the mode you picked in Rule 8, so this section splits two ways.
+What a battle costs you depends entirely on the mode you picked in Rule 8, so this section splits two ways. In **🔓 Open Lineage** it costs you nothing at all: Rules 26 and 27 simply don't apply, and you can skip to Rule 28 (Rule 41).
 
 In **☠️ Permadeath** the pressure is the obvious one: a faint is final, the team shrinks, and the run really can end (Rules 10–12). Nothing below changes that.
 
-In **🔁 Rotation** there's no death to be afraid of, so "loss" can't be the pressure. Instead it comes from the thing this ruleset is actually about: **you don't get to keep the same six forever.** Rules 26–28 and 32 all push you toward rotating your lineages, which is the fun part, rather than punishing you for playing badly, which is the part everyone quits over. There's no scorecard in either mode, and in Rotation the only way to fail is to never finish.
+In **🔁 Rotation** there's no death to be afraid of, so "loss" can't be the pressure. Instead it comes from the thing this ruleset is actually about: **you don't get to keep the same six forever.** Rules 26–28 and 32 all push you toward rotating your lineages, which is the fun part, rather than punishing you for playing badly, which is the part everyone quits over. There's no scorecard in any mode, and in Rotation the only way to fail is to never finish. In Open Lineage even that pressure is gone by design (Rule 41).
 
 Rules 24, 25, 28, 29 and 31 apply in every mode. Rules 26, 27, 30 and 32 are about **tours**, so they apply in **🔁 Rotation and ⚰️ Retirement** but not in ☠️ Permadeath, which has no tours — there, a faint removes the Pokémon outright and succession is simply the next living member of the lineage.
 
@@ -182,7 +184,7 @@ This is the engine of Rotation mode, and it is deliberately **not** a punishment
 
 "Before your next Major Battle" would let you ride the fainted Pokémon through every route and trainer in between and rotate one step from the gym door, which is no penalty at all. Doing it immediately means the loss actually costs you the Pokémon you were leaning on, right when you were leaning on it. *(Reordering the party doesn't clear it — moving a tired Pokémon to sixth place isn't a rotation.)*
 
-**Rule 28 — Catch-Up Clause (both modes).** A Pokémon taking an open chair — rotated in, or succeeding one that Fell — may be trained up to the **level of the one it replaced**, no penalty and no grinding guilt. Bench members fall behind through no fault of their own, and a rotation rule that hands you an under-levelled Pokémon in front of the next gym isn't variety, it's a fine. Level it up and get on with the run. **With the Level Cap on (Rule 29), catch up only as far as the cap** — the two rules together mean your successor arrives exactly at the ceiling, which is the healthiest place for it to be.
+**Rule 28 — Catch-Up Clause (every mode).** A Pokémon taking an open chair — rotated in, or succeeding one that Fell — may be trained up to the **level of the one it replaced**, no penalty and no grinding guilt. Bench members fall behind through no fault of their own, and a rotation rule that hands you an under-levelled Pokémon in front of the next gym isn't variety, it's a fine. Level it up and get on with the run. **With the Level Cap on (Rule 29), catch up only as far as the cap** — the two rules together mean your successor arrives exactly at the ceiling, which is the healthiest place for it to be.
 
 **Rule 29 — Level Cap (optional, chosen at setup).** No Pokémon may be **higher level than the next Major Battle's ace** — or than the highest ace you have already faced, whichever is greater. **A cap never drops.** Cross that line before the battle and it is over-levelled: it hands its chair over at the next PC and **its tour ends**, exactly as if the term had run out.
 
@@ -250,7 +252,7 @@ The Elite Four is the obvious case and the reason the rule exists. You walk in w
 - **One faint question, asked at the end.** A Pokémon that goes down against the second Elite Four member is Winded (Rule 27) — but you're told once, after the last fight, not five times during it. Being asked to hand a chair over between members is asking for the impossible.
 - **One tour tick.** The run is one major, so it costs every serving Pokémon exactly **one** major off its tour, not one per member. A 1d4 tour would otherwise be spent entirely on the League.
 - **Handovers wait.** Spent tours, Winded Pokémon and anyone over the ceiling are **owed, not cancelled**. The debt is paid at the first PC on the far side.
-- It applies to **both modes**. Permadeath changes nothing: a Pokémon that falls in there is Fallen as normal and its chair stays empty for the rest of the run, because you cannot go and fetch the heir.
+- It applies to **every mode**. Permadeath changes nothing: a Pokémon that falls in there is Fallen as normal and its chair stays empty for the rest of the run, because you cannot go and fetch the heir.
 
 **Which runs count.** Every game's Elite Four → Champion block, plus two the story bolts on:
 
@@ -287,12 +289,13 @@ Only the categories your game actually has are offered — Alola shows no Gyms r
 
 **Locked once you start.** Beaten counts and the cap are both derived from this, so like every other dial it fixes itself at your first catch.
 
-**Rule 39 — Presets.** Between the three modes, four encounter rules, seven dials and eight battle categories there are more configurations of this ruleset than anyone needs. Five named starting points cover the shapes worth playing:
+**Rule 39 — Presets.** Between the four modes, four encounter rules, seven dials and eight battle categories there are more configurations of this ruleset than anyone needs. Six named starting points cover the shapes worth playing:
 
 Listed gentlest first. The **mode** is the biggest difference between them:
 
 | | Mode | Sets |
 |---|---|---|
+| 🔓 **Open Lineage** | 🔓 Open Lineage | first encounter · badges and the League only · no dials, no tours |
 | 🌱 **Vanilla** | 🔁 Rotation | first encounter · badges and the League only · no dials |
 | 🌍 **First Playthrough** | 🔁 Rotation | Catch 'em All · badges and the League only · traditional starter |
 | 🌪️ **Chaos** | 🔁 Rotation | the wheel · random succession · 1d4 tours · method lock · level cap |
@@ -302,15 +305,15 @@ Listed gentlest first. The **mode** is the biggest difference between them:
 
 A preset is a starting point, not a cage: every switch stays adjustable afterwards, and changing one just means the run no longer carries that preset's name. **Your game is never touched** — that is always your own choice.
 
-**Veterans** is the one to reach for if Rotation sounds toothless and Permadeath sounds punishing — only walls take Pokémon from you. **Dynasty** uses Retirement deliberately rather than Rotation: with nothing ever lost, a bloodline can't actually die out, which is most of what makes Bloodline Purity interesting.
+**Open Lineage** is the one to reach for if even Rotation's tours sound like more bookkeeping than you want; it is the ruleset stripped to the die and the six numbers (Rule 41). **Veterans** is the one to reach for if Rotation sounds toothless and Permadeath sounds punishing — only walls take Pokémon from you. **Dynasty** uses Retirement deliberately rather than Rotation: with nothing ever lost, a bloodline can't actually die out, which is most of what makes Bloodline Purity interesting.
 
 If you have never played this before, take **Vanilla**. It is the version with the fewest moving parts that still feels like the challenge, and you can turn things on once you know which parts you want more of.
 
-**Rule 40 — ⚰️ Retirement mode (the third mode).** A Pokémon that faints **during a Major Battle** is **Retired**: permanently out of competition. It stays yours, it stays in the Box, and it never takes a chair again. A faint **anywhere else** — a route, a trainer, a cave — costs you absolutely nothing.
+**Rule 40 — ⚰️ Retirement mode.** A Pokémon that faints **during a Major Battle** is **Retired**: permanently out of competition. It stays yours, it stays in the Box, and it never takes a chair again. A faint **anywhere else** — a route, a trainer, a cave — costs you absolutely nothing.
 
 **The contrast with Permadeath in one line:** Permadeath asks *did it faint?* Retirement asks *did it faint at a wall?* Everything else about the two is identical — the Pokémon is kept, boxed and never fielded again either way.
 
-This is the middle of the two original modes, and for a lot of people it is the one they actually wanted:
+This is the middle ground between Rotation and Permadeath, and for a lot of people it is the one they actually wanted:
 
 - **Rotation's weakness** is that nothing is ever really lost, so the churn is bookkeeping rather than drama.
 - **Permadeath's weakness** is that one critical hit from a Zubat on Route 6 can end a Pokémon you had built the run around.
@@ -322,6 +325,27 @@ Mechanically it is Rotation with Rule 27 made permanent. Tours still run and sti
 - **A lineage can genuinely die out**, which makes Bloodline Purity (Rule 33) far sharper: a dynasty that loses its last eligible member at a gym is over, and the number is open to be refounded by whatever rolls it next.
 
 The run ends if you have nobody left who can be fielded. Retired Pokémon are listed separately from the Fallen in the Box, because they are not dead — they have just done their fighting.
+
+---
+
+**Rule 41 — 🔓 Open Lineage mode (the lineage rule and nothing else).** The die still decides everything about *who joins you*: you roll on every catch, that number is permanent, one Pokémon per number sits in the party, a duplicate goes to the Box, and a boxed Pokémon may only ever swap with the party member of its exact number. Rules 1–7 are untouched and they are the whole point.
+
+What Open Lineage removes is every clock and every consequence layered on top:
+
+- **No tour of duty (Rule 26).** Nobody rolls a term, nothing counts down, and no Pokémon is ever handed a discharge. A Pokémon holds its chair until you decide otherwise.
+- **No Winded (Rule 27).** A faint at a Major Battle is a faint. You are never asked who went down, because the answer would change nothing.
+- **No forced timing (Rules 5–6 stand, the pressure doesn't).** You still swap at a PC, because that is where the Box is, and you still swap only *within a number*. But you swap **whenever you want** — mid-route, between two gyms, five minutes after the last swap, as many times as you like.
+- **Nothing is ever lost.** No Fallen, no Retired, no dying lineages. Rule 30 (random succession) and Rule 32 (tour length) have nothing to act on, so the tracker doesn't offer them.
+
+**What it still is.** Six numbered chairs and six numbered benches. The die chose your Bulbasaur to be a 4, so it can only ever be replaced by another 4 — and the Machop you wanted in that chair rolled a 2, so it is competing with your starter instead. You still can't build the team you had in mind, you just aren't being evicted from the one you got. Every optional dial that isn't about forced churn still works: the level cap (Rule 29), bloodline purity (Rule 33), the encounter rules (Rules 15–21), method lock, shiny clause, starter style.
+
+**Who it's for.** Three kinds of player, in practice:
+
+- **Someone who wants the roster mechanic without the challenge run.** A normal playthrough where the die picks your six instead of you. Nothing here can make you lose.
+- **A first run of Lineagelock.** You learn what the numbers do to a team before also learning what tours and walls do to it. Rotation is one switch away next time.
+- **A long game.** Tours churn hard over sixty hours; someone playing a 250-hour ROM hack may want the lineage constraint to be the constraint and nothing more.
+
+**The honest caveat:** without tours, a good team stays your team. If you catch six strong Pokémon early, Open Lineage will mostly feel like a normal playthrough with an unusual party, and the Box will sit unused. That is exactly what some people want, and it is worth knowing before you pick it — if you want to be *made* to use your Box, that's 🔁 Rotation.
 ## 3. Quick Reference
 
 *Everything you need mid-run, on one screen. Rule numbers in brackets if you want the detail.*
@@ -338,7 +362,7 @@ The run ends if you have nobody left who can be fielded. Retired Pokémon are li
 **Set once, before you start**
 | | Options |
 |---|---|
-| **Mode** [8] | 🔁 Rotation — a faint is just a faint · ☠️ Permadeath — a faint is final [10–12] |
+| **Mode** [8] | 🔓 Open Lineage — nothing is ever forced [41] · 🔁 Rotation — the die times your swaps [26] · ⚰️ Retirement — walls take Pokémon [40] · ☠️ Permadeath — any faint is final [10–12] |
 | **Encounter rule** [15] | 👣 First encounter · 🎬 Audition · 🎡 Spin the wheel [16] · 🌍 Catch 'em all |
 | **Game** | Sets your major-battle checklist [25] |
 | **Dials** — all off by default | 📏 Level cap [29] · 🎲 Random succession [30] · 📜 Tour length [32] · 🧬 Bloodline purity [33] · 🎣 Method lock [34] · ✨ Shiny clause [35] · 🔥 Starter style [36] |
@@ -347,14 +371,14 @@ The run ends if you have nobody left who can be fielded. Retired Pokémon are li
 1. The **starter is two rolls** — which one, then which slot [14, 36].
 2. **Gifts, statics, in-game trades and legendaries all roll** like anything else [19, 20].
 3. **Evolving never changes a number.** Nothing does [1].
-4. **Nothing is ever released**, in either mode [13].
-5. **Tours** [26] — every Pokémon rolls a die when it takes a chair; that's how many majors it serves before handing over. A faint in a major ends its tour on the spot [27]. Whoever takes the chair may be levelled to match [28].
+4. **Nothing is ever released**, in any mode [13].
+5. **Tours** [26] — in every mode except 🔓 Open Lineage, every Pokémon rolls a die when it takes a chair; that's how many majors it serves before handing over. A faint in a major ends its tour on the spot [27]. Whoever takes the chair may be levelled to match [28].
 
 **The Elite Four** (and any run with no Box between fights) counts as **one** Major Battle: one cap, free levelling, one faint question, **one** tour tick, and every handover deferred to the far side [37].
 
 **Battling** — Set mode, no items in battle [24]. Field moves are free, no slot needed [21].
 
-**Losing** — Rotation mode can't be lost. Permadeath ends only when every Pokémon you own has fallen [12].
+**Losing** — 🔓 Open Lineage and 🔁 Rotation can't be lost. Retirement and Permadeath end when you have nobody left who can be fielded [12, 40].
 
 ---
 
@@ -419,7 +443,8 @@ The starter options and the level cap used to live here; they're now Rules 36 an
 - **Multiple runs at once** — tap the run name in the header to switch. Every run keeps its own party, Box, history, game, mode, encounter rule and naming theme, so a relaxed Rotation run through FireRed and a Permadeath Decay run can sit side by side without touching each other. Rename, reset or delete any of them from the same screen.
 
 - **Run setup** — four steps before your first catch: **mode** (🔁 Rotation or ☠️ Permadeath), **game**, **encounter rule** (👣 First encounter · 🎬 Audition · 🎡 Spin the wheel · 🌍 Catch 'em all) and the **dials**. Everything locks itself the moment you catch something, exactly as Rules 8 and 15 require.
-- **Presets** — a ⚡ row above the setup steps with five named starting points (Rule 39). One tap sets the mode, the encounter rule, the battle scope and all seven dials; the row then shows which preset you are on, and clears itself the moment you change anything by hand.
+- **Presets** — a ⚡ row above the setup steps with six named starting points (Rule 39). One tap sets the mode, the encounter rule, the battle scope and all seven dials; the row then shows which preset you are on, and clears itself the moment you change anything by hand.
+- **Open Lineage mode** — the mode picker's first card, and the switch that hides everything the mode doesn't have: no tour rolls, no tour column on the chairs, no faint prompt after a major, and the random-succession and tour-length dials are gone from the setup screen rather than sitting there doing nothing (Rule 41).
 - **Retirement mode** — the faint prompt says outright that anyone you tick is retired for good, and the Box grows a **Retired** section, separate from the Fallen memorial, for Pokémon that are still yours but done competing (Rule 40).
 - **Which battles count** — a setup step listing only the categories your game has, with how many battles each one holds. Switch rivals or the League off and the Progress tab greys them out as *not counted this run*: still tickable, but no longer moving the cap or ticking tours (Rule 38).
 - **The seven dials** (⚙️ on the setup screen) — level cap, random succession, tour length, bloodline purity, method lock, shiny clause and starter style, per Rules 29–30 and 32–36. Each one says what it does before you switch it on, and the setup card lists whichever you've enabled.
