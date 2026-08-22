@@ -68,6 +68,17 @@
   /* lineage grid */
   .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   @media(max-width:430px){.grid{grid-template-columns:1fr}}
+  /* Long lists of .bat / .row: one column on a phone, two when there's width for them.
+     The items keep their own margin-bottom, so the grid only needs a column gap. */
+  .listgrid{display:grid;grid-template-columns:1fr;align-content:start}
+  /* A desktop gets the room it actually has. Two steps, so the type never has to span
+     the full width of a 1440px monitor — the fab stays capped at 688px either way. */
+  @media(min-width:900px){
+    .wrap{max-width:1020px}
+    .grid{grid-template-columns:repeat(3,1fr)}
+    .listgrid{grid-template-columns:1fr 1fr;gap:0 10px}
+  }
+  @media(min-width:1280px){ .wrap{max-width:1240px} }
   .slot{position:relative;background:var(--card);border:1px solid var(--line);
     border-radius:var(--r);padding:12px;min-height:76px;display:flex;align-items:center;gap:11px;
     cursor:pointer;overflow:hidden}
@@ -1962,7 +1973,7 @@ function viewBattles(){
   } else {
     h += `<p class="note" style="margin:2px 0 12px">Tap a battle to mark it beaten.
       Anyone who fainted in it is <b>Winded</b> (Rule 26) — rotate them before the next one.</p>`;
-    h += list.map((b,i)=>{
+    h += '<div class="listgrid">' + list.map((b,i)=>{
       const [label,col] = KIND[b[3]] || KIND.custom;
       const on = !!S.beat[i];
       const out = offList(b);
@@ -1976,7 +1987,7 @@ function viewBattles(){
         </div>
         <div class="kind" style="color:${col};border-color:${col}33">${label}</div>
       </div>`;
-    }).join('');
+    }).join('') + '</div>';
   }
   h += `<button class="btn ghost" style="margin-top:12px" onclick="openAddBattle()">+ Add a battle</button>
         <button class="btn ghost" style="margin-top:8px" onclick="openGamePicker()">🎮 Change game</button>`;
@@ -2530,7 +2541,7 @@ function viewAreas(){
       [['all','All'],['open','Remaining'],['done','Used']].map(([k,l])=>
         `<button class="${areaFilter===k?'on':''}" onclick="areaFilter='${k}';render()">${l}</button>`).join('')}
     </div>
-    <div id="areaList">${areaRows(shown, catches)}</div>
+    <div id="areaList" class="listgrid">${areaRows(shown, catches)}</div>
     <button class="btn ghost" style="margin-top:12px" onclick="openAddArea()">+ Add a location</button>`;
   return h;
 }
@@ -2626,10 +2637,11 @@ function viewBox(){
       if (!g.length) continue;
       const cur = inSlot(n);
       h += `<div class="grouphead" onclick="benchList(${n})" style="cursor:pointer"><div class="pill">${n}</div>
-        <span>${g.length} waiting · seat held by ${cur?esc(cur.nick):'nobody'} · history ›</span></div>` + g.map(row).join('');
+        <span>${g.length} waiting · seat held by ${cur?esc(cur.nick):'nobody'} · history ›</span></div>
+        <div class="listgrid">` + g.map(row).join('') + '</div>';
     }
   } else {
-    h += b.slice().sort((a,c)=>c.caughtAt-a.caughtAt).map(row).join('');
+    h += '<div class="listgrid">' + b.slice().sort((a,c)=>c.caughtAt-a.caughtAt).map(row).join('') + '</div>';
   }
   h += retiredSection() + memorial();
   return h;
@@ -2640,15 +2652,17 @@ function retiredSection(){
   const r = retiredList().filter(m => m.status !== 'fallen');
   if (!r.length) return '';
   return `<h2 class="sec" style="color:var(--gold)">Retired — ${r.length}
-      <span class="tip">fainted at a wall; still yours, done competing</span></h2>` +
-    r.slice().sort((a,b)=>(b.retiredAt||0)-(a.retiredAt||0)).map(row).join('');
+      <span class="tip">fainted at a wall; still yours, done competing</span></h2>
+    <div class="listgrid">` +
+    r.slice().sort((a,b)=>(b.retiredAt||0)-(a.retiredAt||0)).map(row).join('') + '</div>';
 }
 function memorial(){
   const f = fallen();
   if (!f.length) return '';
   return `<h2 class="sec" style="color:var(--red)">Fallen — ${f.length}
-      <span class="tip">out of the run, never released</span></h2>` +
-    f.slice().sort((a,b)=>(b.fellAt||0)-(a.fellAt||0)).map(fallenRow).join('');
+      <span class="tip">out of the run, never released</span></h2>
+    <div class="listgrid">` +
+    f.slice().sort((a,b)=>(b.fellAt||0)-(a.fellAt||0)).map(fallenRow).join('') + '</div>';
 }
 
 function row(m){
