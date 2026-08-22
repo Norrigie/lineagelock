@@ -808,9 +808,10 @@ function openHouseRules(){
 
     <div class="modecard ${S.levelCap?'on':''}" ${locked?'':'onclick="toggleCap()"'}>
       <div class="mhead">📏 Level cap<span>${S.levelCap?'ON':'off'}</span></div>
-      <div class="mbody">Nobody may out-level the next Major Battle's ace. Cross the line before the
-        fight and that Pokémon is benched — its tour ends there (Rule 29). Levelling past it
-        <i>during</i> the battle is fine.</div>
+      <div class="mbody">Nobody may out-level the next Major Battle's ace — and every wall you beat
+        raises the ceiling by <b>at least one</b>, so a weaker wall still pays out and the cap never
+        drops (Rule 29). Cross the line before the fight and that Pokémon is benched: its tour ends
+        there. Levelling past it <i>during</i> the battle is fine.</div>
     </div>
 
     ${!tours() ? '' : `<div class="modecard ${S.succession==='random'?'on':''}"
@@ -1051,16 +1052,26 @@ function wallAce(){
   for (let i = g.a; i <= g.z; i++) top = Math.max(top, aceAt(i));
   return top || null;
 }
-// The cap itself, which is that ace or the highest one you have already faced, whichever is
-// greater. Caps only ever rise: you were legally allowed to reach the earlier one.
+// The cap itself. Two guarantees, in this order: a wall never lowers the ceiling (you were
+// legally allowed to reach the old one and cannot un-level anybody), and every wall raises it
+// by at least one (Rule 29) — otherwise clearing a weaker wall would buy you nothing at all.
+// Stepping wall by wall matters: a Rule 37 chain is one wall and gets one +1, not five.
+function capThrough(upto){
+  const list = battleList();
+  let cap = 0;
+  for (let i = 0; i < list.length && i <= upto; ){
+    const c = chainAt(i);
+    const ace = aceAt(i);                  // chain-aware: the block's strongest member
+    if (ace) cap = cap ? Math.max(ace, cap + 1) : ace;
+    i = (c ? c[1] : i) + 1;
+  }
+  return cap || null;
+}
 function knownAce(){
   const nx = nextMajor();
   if (!nx) return null;
   const g = gauntlet();
-  const upto = g ? g.z : nx.i;
-  let top = 0;
-  for (let i = 0; i <= upto; i++) top = Math.max(top, aceAt(i));
-  return top || null;
+  return capThrough(g ? g.z : nx.i);
 }
 function syncCap(){
   const a = knownAce();
@@ -1082,14 +1093,28 @@ function confirmCap(i){
   const lv = aceAt(i);
   const who = battleName(i);
   if (!lv) return askCap(i);            // nothing on file — ask what it actually was
+  // The cap you walk out with is rarely this number any more: it is at least one above the last
+  // wall's, so show both whenever they differ rather than making you work it out.
+  const next = capThrough(chainEnd(i) ? (chainAt(i) ? chainAt(i)[1] : i) : i);
   sheet(`<h3>\u{1F4CF} ${esc(who)} \u2014 ace level</h3>
     <p class="note" style="margin:0 0 4px">You have just fought <b>${esc(who)}</b>, so you saw
       the team. We have that ace at:</p>
-    <div style="text-align:center;font-size:44px;font-weight:900;color:var(--gold);
-      line-height:1.1;margin:10px 0">Lv ${lv}</div>
+    ${next && next !== lv
+      ? `<div style="display:flex;gap:10px;margin:12px 0">
+          <div style="flex:1;text-align:center;border:1px solid var(--line);border-radius:12px;padding:8px 4px">
+            <div style="font-size:10px;font-weight:900;letter-spacing:1px;color:var(--dim)">ITS ACE</div>
+            <div style="font-size:34px;font-weight:900;line-height:1.15">Lv ${lv}</div></div>
+          <div style="flex:1;text-align:center;border:1px solid var(--gold);border-radius:12px;padding:8px 4px">
+            <div style="font-size:10px;font-weight:900;letter-spacing:1px;color:var(--gold)">YOUR CAP FOR IT</div>
+            <div style="font-size:34px;font-weight:900;line-height:1.15;color:var(--gold)">Lv ${next}</div></div>
+        </div>
+        <p class="note" style="margin:0 0 4px">Your ceiling sat above this wall because every wall raises
+          it by at least one and it never drops (Rule 29) — so beating it has moved you up again.</p>`
+      : `<div style="text-align:center;font-size:44px;font-weight:900;color:var(--gold);
+          line-height:1.1;margin:10px 0">Lv ${lv}</div>`}
     <p class="note" style="margin:0 0 12px">Was that right? Answering once settles it for the
-      rest of the run \u2014 and because a cap never drops (Rule 29), a correction here can still
-      change the cap you play under next.</p>
+      rest of the run \u2014 and since every later cap is built on this number, a correction here
+      still changes the cap you play under next.</p>
     <div class="acts">
       <button class="btn" onclick="acceptCap(${i})">\u2713 Yes, Lv ${lv}</button>
     </div>
@@ -1142,8 +1167,8 @@ function askCap(i){
   const guess = known ? aceAt(i) : (knownAce() || S.cap);
   sheet(`<h3>\u{1F4CF} ${esc(who)} \u2014 ace level</h3>
     <p class="note" style="margin:0 0 10px">${known
-      ? `Nothing on file for <b>${esc(who)}</b>. What was the highest level on that team? Your
-         cap is the highest ace you have faced (Rule 29), so this sets it.`
+      ? `Nothing on file for <b>${esc(who)}</b>. What was the highest level on that team? Your cap
+         is built from the walls you have beaten (Rule 29), so this sets it.`
       : `What level is <b>${esc(who)}</b>\u2019s highest Pok\u00e9mon? Nobody may go above it.`}</p>
     <label for="capIn">Ace level</label>
     <input type="number" id="capIn" min="1" max="100" inputmode="numeric"
