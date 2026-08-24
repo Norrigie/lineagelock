@@ -71,7 +71,7 @@ Every Nuzlocke run eventually becomes the same story: you get attached, somethin
 | What forces a change | **Nothing** | Tours run out (Rule 26) | Tours, and walls take Pokémon | Tours, and faints take Pokémon |
 | When you may swap | **Whenever you like** | At a PC, when the die says so | At a PC, when the die says so | At a PC, or when a chair empties |
 | Faints on a route | Nothing | Nothing | Nothing | It's **Fallen** |
-| Faints at a Major Battle | Nothing | Tour ends early | **Retired** — never fields again | It's **Fallen** |
+| Faints at a Major Battle | Nothing | Nothing | **Retired** — never fields again | It's **Fallen** |
 | Your team shrinks | Never | Never | Only at walls | Yes, anywhere |
 | A lineage can die out | No | No | Yes | Yes |
 | The run can be lost | No | No | Yes | Yes |
@@ -166,7 +166,7 @@ Rules 24, 25, 28, 29 and 31 apply in every mode. Rules 26, 27, 30 and 32 are abo
 
 **Rule 25 — Major battles.** A **Major Battle** is any Gym Leader, Grand Trial, Titan, Team Star base, Noble, **Rival battle**, Team-Whatever boss, Elite Four member, or Champion — any story wall the game builds up to. These are the only battles the stakes rules care about — and **Rule 38** lets you narrow that list to the categories you actually want to count. The tracker ships the full checklist for all 21 mainline games plus Decay, so you don't have to decide what counts: pick your game at the start of the run and tick them off as you go.
 
-**Rivals count, every time.** Your rival is the one trainer who keeps turning up with a team built to answer yours, so those fights carry the same weight as a gym — including for Winded (Rule 27). Every mainline game lists its rival battles **by location, in story order**: Blue's seven ambushes across Kanto, Silver's five, Barry's six in Diamond·Pearl and seven in Platinum, Hop's Postwick-to-Circhester run, Cheren and Bianca's twelve between them, Trace, Hugh, Calem/Serena, Hau and Nemona. Post-game rematches are excluded — that's a different, much stronger team, and a cap built on it would be meaningless.
+**Rivals count, every time.** Your rival is the one trainer who keeps turning up with a team built to answer yours, so those fights carry the same weight as a gym — they tick tours (Rule 26) and move the cap (Rule 29) like anything else. Every mainline game lists its rival battles **by location, in story order**: Blue's seven ambushes across Kanto, Silver's five, Barry's six in Diamond·Pearl and seven in Platinum, Hop's Postwick-to-Circhester run, Cheren and Bianca's twelve between them, Trace, Hugh, Calem/Serena, Hau and Nemona. Post-game rematches are excluded — that's a different, much stronger team, and a cap built on it would be meaningless.
 
 The one exception to "fights *against* them": a few rivals turn up in a **multi battle at a story wall** where they fight alongside you against someone else — Barry at the Spear Pillar is the clearest case. Those are on the list, because the wall is real even if the rival is on your side of it. Ordinary tag-alongs on a route are not.
 
@@ -176,13 +176,19 @@ The one exception to "fights *against* them": a few rivals turn up in a **multi 
 - Its tour ticks down by one each time you win a Major Battle. At **zero**, it steps down at the next PC and its successor rolls a fresh tour of its own.
 - **An only child re-enlists.** If its lineage has nobody else, it simply rolls a new tour and keeps serving. Nothing ever stalls.
 
-This is the engine of Rotation mode, and it is deliberately **not** a punishment. It fires whether you win comfortably or scrape through, so a clean run turns over exactly as much as a messy one — and because you can see every term counting down, you're planning the handover for hours before it happens rather than being ambushed by it.
+This is the engine of Rotation mode, the **only** thing that hands a chair on, and it is deliberately **not** a punishment. It fires whether you win comfortably or scrape through, so a clean run turns over exactly as much as a messy one — and because you can see every term counting down, you're planning the handover for hours before it happens rather than being ambushed by it.
 
-**Rule 27 — A faint ends a tour early (🔁 Rotation and ⚰️ Retirement).** Any Pokémon that faints during a Major Battle is **Winded**: its tour is over as of that moment, regardless of how many majors it had left. It hands the chair over **at the very next PC** — before the next gym, before the next route, before anything else. An only child stays and re-enlists as usual.
+**Rule 27 — In 🔁 Rotation, a faint at a Major Battle costs you nothing.** A Pokémon that goes down against a gym leader is healed at the Centre and keeps its chair, its number and the rest of its tour. **Only the tour ends a tour** (Rule 26), and only the level cap can end one early (Rule 29). Nothing about how a battle went changes who is sitting where.
 
-**In ⚰️ Retirement this is permanent** (Rule 40): the Pokémon is retired rather than benched, it leaves the chair immediately rather than at the next PC, and there is no re-enlisting — an only child that goes down leaves its lineage empty.
+Earlier drafts of this ruleset said the opposite: a faint at a wall made a Pokémon **Winded** and forced it out at the next PC. That rule is withdrawn, because it was backwards — **it rewarded throwing the fight.**
 
-"Before your next Major Battle" would let you ride the fainted Pokémon through every route and trainer in between and rotate one step from the gym door, which is no penalty at all. Doing it immediately means the loss actually costs you the Pokémon you were leaning on, right when you were leaning on it. *(Reordering the party doesn't clear it — moving a tired Pokémon to sixth place isn't a rotation.)*
+Work it through. Your lineage-2 Gyravor rolled a 6 and has four majors left, but you have just caught a much better 2 and you would like it in the chair now. Under Winded you did not have to wait: you let Gyravor faint at the next gym — you won the fight anyway, Rotation never loses anybody — and the rule you were supposedly being punished by handed you the rotation you wanted, four majors early and for free. The penalty *was* the shortcut. A rule you can trigger on purpose, at no cost, to get the thing you wanted is not a penalty at all.
+
+So a tour is now the only clock in the room. It runs whether you win comfortably or scrape through, it cannot be hurried, and you can see it counting down for hours before it lands. That is what makes it worth planning around.
+
+**⚰️ Retirement is the exception**, and the reason it is a separate mode: there a faint at a Major Battle **retires** that Pokémon permanently (Rule 40). The exploit above does not exist there, because letting one faint on purpose costs you the Pokémon for the rest of the run — the punishment is real, so it can afford to be triggered by a faint.
+
+In ☠️ Permadeath a faint anywhere is final (Rule 10), and in 🔓 Open Lineage nothing is asked at all (Rule 41).
 
 **Rule 28 — Catch-Up Clause (every mode).** A Pokémon taking an open chair — rotated in, or succeeding one that Fell — may be trained up to the **level of the one it replaced**, no penalty and no grinding guilt. Bench members fall behind through no fault of their own, and a rotation rule that hands you an under-levelled Pokémon in front of the next gym isn't variety, it's a fine. Level it up and get on with the run. **With the Level Cap on (Rule 29), catch up only as far as the cap** — the two rules together mean your successor arrives exactly at the ceiling, which is the healthiest place for it to be.
 
@@ -259,9 +265,9 @@ The Elite Four is the obvious case and the reason the rule exists. You walk in w
 
 - **One cap for the whole run, and it's the highest ace in it** — the Champion's, in practice. Set it before you go in and it does not move until you're out. Otherwise you'd be legal against the first member, illegally over the cap by the second, and holding a Pokémon you're neither allowed to use nor able to swap.
 - **Levelling up inside is free**, exactly as it is during any single major (Rule 29). Five hard battles will push your team up several levels and none of it counts against you.
-- **One faint question, asked at the end.** A Pokémon that goes down against the second Elite Four member is Winded (Rule 27) — but you're told once, after the last fight, not five times during it. Being asked to hand a chair over between members is asking for the impossible.
+- **One faint question, asked at the end — in ⚰️ Retirement.** A Pokémon that goes down against the second Elite Four member is retired (Rule 40), but you're asked once, after the last fight, not five times during it. In Rotation nothing is asked, because a faint there costs nothing (Rule 27).
 - **One tour tick.** The run is one major, so it costs every serving Pokémon exactly **one** major off its tour, not one per member. A 1d4 tour would otherwise be spent entirely on the League.
-- **Handovers wait.** Spent tours, Winded Pokémon and anyone over the ceiling are **owed, not cancelled**. The debt is paid at the first PC on the far side.
+- **Handovers wait.** A spent tour and anyone over the ceiling are **owed, not cancelled**. The debt is paid at the first PC on the far side.
 - It applies to **every mode**. Permadeath changes nothing: a Pokémon that falls in there is Fallen as normal and its chair stays empty for the rest of the run, because you cannot go and fetch the heir.
 
 **Which runs count.** Every game's Elite Four → Champion block, plus two the story bolts on:
@@ -329,9 +335,10 @@ This is the middle ground between Rotation and Permadeath, and for a lot of peop
 - **Permadeath's weakness** is that one critical hit from a Zubat on Route 6 can end a Pokémon you had built the run around.
 - **Retirement puts the cost exactly where the tension already is.** You were nervous walking into that gym anyway. Now that nervousness means something, and the forty minutes of route grinding beforehand don't.
 
-Mechanically it is Rotation with Rule 27 made permanent. Tours still run and still tick, but being **Winded at a wall is final** — the Pokémon leaves the chair immediately and is retired rather than benched. Two consequences worth knowing:
+Mechanically it is Rotation plus one consequence Rotation deliberately doesn't have. Tours still run and still tick exactly as in Rule 26, and on top of that **a faint at a wall is final** — the Pokémon leaves the chair immediately and is retired rather than benched. Three consequences worth knowing:
 
-- **There is no re-enlisting.** In Rotation an only child that faints simply rolls a fresh tour and stays. In Retirement it retires, and if the lineage has nobody else that chair is **empty for the rest of the run** unless the die hands that number to a new catch.
+- **There is no re-enlisting.** In Rotation an only child whose tour runs out simply rolls a fresh one and stays. In Retirement it retires, and if the lineage has nobody else that chair is **empty for the rest of the run** unless the die hands that number to a new catch.
+- **This is the one mode where the fight itself moves your roster.** Rotation withdrew that on purpose, because a costless faint made throwing the fight a shortcut (Rule 27). Here it costs the Pokémon, so it stays.
 - **A lineage can genuinely die out**, which makes Bloodline Purity (Rule 33) far sharper: a dynasty that loses its last eligible member at a gym is over, and the number is open to be refounded by whatever rolls it next.
 
 The run ends if you have nobody left who can be fielded. Retired Pokémon are listed separately from the Fallen in the Box, because they are not dead — they have just done their fighting.
@@ -343,7 +350,7 @@ The run ends if you have nobody left who can be fielded. Retired Pokémon are li
 What Open Lineage removes is every clock and every consequence layered on top:
 
 - **No tour of duty (Rule 26).** Nobody rolls a term, nothing counts down, and no Pokémon is ever handed a discharge. A Pokémon holds its chair until you decide otherwise.
-- **No Winded (Rule 27).** A faint at a Major Battle is a faint. You are never asked who went down, because the answer would change nothing.
+- **No faint consequence at all.** Rotation already gives a faint at a wall no cost (Rule 27); Open Lineage additionally has no tour to end, so nothing whatsoever moves a Pokémon out of a chair except you.
 - **No forced timing (Rules 5–6 stand, the pressure doesn't).** You still swap at a PC, because that is where the Box is, and you still swap only *within a number*. But you swap **whenever you want** — mid-route, between two gyms, five minutes after the last swap, as many times as you like.
 - **Nothing is ever lost.** No Fallen, no Retired, no dying lineages. Rule 30 (random succession) and Rule 32 (tour length) have nothing to act on, so the tracker doesn't offer them.
 
@@ -403,7 +410,7 @@ This is the only moment in Lineagelock where you choose your six outright.
 2. **Gifts, statics, in-game trades and legendaries all roll** like anything else [19, 20].
 3. **Evolving never changes a number.** Nothing does [1].
 4. **Nothing is ever released**, in any mode [13].
-5. **Tours** [26] — in every mode except 🔓 Open Lineage, every Pokémon rolls a die when it takes a chair; that's how many majors it serves before handing over. A faint in a major ends its tour on the spot [27]. Whoever takes the chair may be levelled to match [28].
+5. **Tours** [26] — in every mode except 🔓 Open Lineage, every Pokémon rolls a die when it takes a chair; that's how many majors it serves before handing over. **A faint doesn't shorten it** — that's the whole of Rule 27, and it's why you can't throw a gym to rotate early. Whoever takes the chair may be levelled to match [28].
 
 **The Elite Four** (and any run with no Box between fights) counts as **one** Major Battle: one cap, free levelling, one faint question, **one** tour tick, and every handover deferred to the far side [37]. At its door you get **one free pick from every lineage** — the only time you choose your six outright [42].
 
@@ -427,7 +434,7 @@ This is the only moment in Lineagelock where you choose your six outright.
 
 **Mt. Moon.** First encounter: Zubat. Caught, roll — **1**. Slot 1 is my Wartortle. Boxed as `Wonebat`. My starter now has a successor waiting, which is an extremely funny sentence.
 
-**Pewter Gym.** Brock. Set mode, no items. I put Two Fisted in the lead because Low Kick wins this fight — that's free under Rule 2. Fourgey still faints to a Rock Tomb before Two Fisted closes it out. Win — but Fourgey is now **Winded** (Rule 27), and Slot 4 *does* have another member. So I walk into the Pokémon Center on the way out, Fourgey goes to the Box, and `Rat Pack IV` gets called up on the spot — I don't get to keep using Fourgey across Mt. Moon and swap at the last second. My Slot 4 seat just changed hands for the first time, entirely because of how the Brock fight went.
+**Pewter Gym.** Brock. Set mode, no items. I put Two Fisted in the lead because Low Kick wins this fight — that's free under Rule 2. Fourgey still faints to a Rock Tomb before Two Fisted closes it out. Win — and Fourgey walks out of the Centre with its chair and its number intact, because in Rotation a faint at a wall costs nothing (Rule 27). What the fight *did* cost is a tick off everyone's tour: Fourgey rolled a 2 and has one major left, so Brock's badge means `Rat Pack IV` takes the Slot 4 chair after the **next** wall, whether or not anybody faints in it. The clock was always the clock.
 
 **Route 24.** Abra, first encounter, caught. Roll — **6**. Caterpie's slot. Boxed. I will think about this Abra every day for the rest of the run.
 
@@ -453,14 +460,14 @@ The starter options and the level cap used to live here; they're now Rules 36 an
 - **Open Bench.** Lineage swaps can happen anywhere, any time, not just at a PC. Best for handheld play in short sessions.
 - **Mercy Roll.** Once per gym badge, you may re-roll one catch's die. Use it when a legendary rolls into your favorite slot. This is the one house rule that openly overrules a numbered rule — Rule 17 says you never re-roll a bad number — so announce it or don't run it.
 - **Tours Off.** Drop Rule 26 and let Rule 27 do the work alone: nobody rotates unless they faint in a major. Closer to how the ruleset used to play, and much less churn.
-- **No Set Mode.** Drop Rule 24 entirely. Lineagelock still works fine as a pure team-composition challenge; you just lose some of the Winded drama.
+- **No Set Mode.** Drop Rule 24 entirely. Lineagelock still works fine as a pure team-composition challenge; you just lose some of the tension at the walls.
 
 ### Harder / spicier
 
 - **Marching Order.** Give up the free marching order in Rule 2: your party must always *stand* in ascending Slot Number order, so your lowest-numbered Pokémon always leads off. Suddenly rolling a 1 is a real burden and rolling a 6 is a bodyguard.
-- **Locked Lead.** You may reorder freely between battles, but whoever leads off a Major Battle must lead the next one too, unless they were Winded. No re-leading to dodge a matchup.
+- **Locked Lead.** You may reorder freely between battles, but whoever leads off a Major Battle must lead the next one too, unless their tour has ended. No re-leading to dodge a matchup.
 - **Themed Names Only.** Rule 23 becomes mandatory: one theme, chosen before the run, every nickname rolled from it — no hand-picking, no exceptions.
-- **Loyalty Roll.** When a Winded Pokémon rotates out, roll 1d6: on a 1, it's **Retired** — permanently ineligible for the party (still yours, still safe in the Box, just done competing). The closest thing to permadeath without anyone actually dying.
+- **Loyalty Roll.** When a Pokémon's tour ends, roll 1d6: on a 1, it's **Retired** — permanently ineligible for the party (still yours, still safe in the Box, just done competing). The closest thing to permadeath without anyone actually dying. (⚰️ Retirement mode does this properly, and only for faints at walls — Rule 40.)
 - **Locked Lineage.** Once a lineage has 3+ members, you must rotate the seat after *every* Major Battle, win or lose. Deep benches should get used.
 - **Hard Six.** You may never travel with an empty slot if the Box could fill it. If Slot 5 has a member available, Slot 5 is occupied — no benching a lineage because you dislike everyone in it.
 - **Dupes Off.** Delete the dupes clause in Rule 15. Catch the sixth Zubat. Build the Zubat dynasty. Embrace it.
@@ -477,6 +484,7 @@ The starter options and the level cap used to live here; they're now Rules 36 an
 - **Presets** — a ⚡ row above the setup steps with six named starting points (Rule 39). One tap sets the mode, the encounter rule, the battle scope and all seven dials; the row then shows which preset you are on, and clears itself the moment you change anything by hand.
 - **Open Lineage mode** — the mode picker's first card, and the switch that hides everything the mode doesn't have: no tour rolls, no tour column on the chairs, no faint prompt after a major, and the random-succession and tour-length dials are gone from the setup screen rather than sitting there doing nothing (Rule 41).
 - **Retirement mode** — the faint prompt says outright that anyone you tick is retired for good, and the Box grows a **Retired** section, separate from the Fallen memorial, for Pokémon that are still yours but done competing (Rule 40).
+- **No faint prompt in Rotation** — the tracker asks who went down only in ⚰️ Retirement, where the answer costs something. In Rotation, marking a major beaten ticks the tours and moves on (Rule 27).
 - **The Final Selection** — a 🏁 card appears on the Overview the moment the League is the next wall and none of it is beaten. It lays out all six lineages with everyone eligible to carry their number in, shows who you'd have to train and how far, and swaps on a tap; *Lock it in* records the team in the log. Once the first member goes down the tracker refuses swaps outright and says why (Rules 37, 42).
 - **Where each wall is** — every one of the **528 bundled majors** names the place it happens: the town, gym, cave or route, on the Next Major card and on every row of the checklist. Decay's 57 were read out of the game's own map files, since its dev sheet records levels but not places.
 - **Which battles count** — a setup step listing only the categories your game has, with how many battles each one holds. Switch rivals or the League off and the Progress tab greys them out as *not counted this run*: still tickable, but no longer moving the cap or ticking tours (Rule 38).

@@ -752,6 +752,9 @@ function fixRun(d, i){
   d.starter = ['full','half','trad'].includes(d.starter) ? d.starter : 'full';
   d.mlock = !!d.mlock; d.methods = d.methods || {};
   d.capOK = d.capOK || {}; d.capFix = d.capFix || {}; d.finalPick = d.finalPick || {};
+  // Winded no longer exists outside Retirement's own prompt (Rule 27), and a run saved under
+  // the old rule could otherwise carry a flag with nothing left to clear it.
+  for (const m of (d.mons || [])) delete m.winded;
   d.majors = Object.assign({ gyms:true, trials:true, paldea:true, nobles:true, rivals:true,
     teams:true, league:true, postgame:false }, d.majors || {});
   d.preset = d.preset || null;
@@ -1285,10 +1288,10 @@ function living(){ return S.mons.filter(m=>m.status!=='fallen'); }
 // Anyone who could still take a chair, which is what "the run is over" actually depends on.
 function fieldable(){ return S.mons.filter(canField); }
 const isPD = () => S.mode === 'permadeath';
-// Retirement keeps tours; what changes is that being Winded at a wall is permanent (Rule 40).
+// Retirement keeps tours; what changes is that a faint at a wall takes the Pokémon (Rule 40).
 const isRetire = () => S.mode === 'retire';
-// Open Lineage keeps the numbers and drops everything that forces a change: no tour, no Winded
-// handover, no faint consequence. Only you (or the level cap) ever empties a chair.
+// Open Lineage keeps the numbers and drops everything that forces a change: no tour, no faint
+// consequence. Only you (or the level cap) ever empties a chair.
 const isOpen = () => S.mode === 'open';
 // Retired Pokémon are still yours and still in the Box — they just never compete again.
 const retiredList = () => S.mons.filter(m => m.retired);
@@ -1557,7 +1560,7 @@ function viewParty(){
   }
   // Debts pile up invisibly inside the gauntlet, so show what's waiting.
   if (inGauntlet()){
-    const owed = party().filter(m => m.winded || (tours() && m.term === 0));
+    const owed = party().filter(m => tours() && m.term === 0);
     if (owed.length) h += `<div class="nextup" onclick="tab='progress';pane='battles';render()">
       <div class="nlabel">HELD</div>
       <div class="nname">${owed.map(m=>esc(m.nick)).join(', ')}<span>handover owed — waits until
@@ -1573,7 +1576,7 @@ function viewParty(){
   // has no eligible heir — both need a die, and only the first used to be offered.
   const nt = needsTour();
   const stuck = tours() && !inGauntlet()
-    ? party().filter(m => m.term === 0 && !hasHeir(m) && !m.winded) : [];
+    ? party().filter(m => m.term === 0 && !hasHeir(m)) : [];
   const owed = [...nt, ...stuck];
   if (owed.length) h += `<div class="nextup roll" onclick="openTourRolls()">
       <div class="nlabel">TOUR</div>
@@ -1607,8 +1610,7 @@ function viewParty(){
           </div>
         </div>
         ${bench?`<div class="chip depth">+${bench}</div>`:''}
-        ${m.winded ? '<div class="chip wind">💨 tour over</div>'
-          : m.term === 0 ? '<div class="chip wind">📜 tour up</div>'
+        ${m.term === 0 ? '<div class="chip wind">📜 tour up</div>'
           : m.term == null && tours()
             ? `<div class="chip roll" title="Roll this Pokémon's tour"
                 onclick="event.stopPropagation();rollTourFor(${m.id})">🎲 roll tour</div>`
@@ -2030,8 +2032,10 @@ function viewBattles(){
     h += `<div class="empty" style="margin-top:12px"><span class="big">🛠️</span>
       No preset list for a ROM hack or fan game — add the majors as you meet them.</div>`;
   } else {
-    h += `<p class="note" style="margin:2px 0 12px">Tap a battle to mark it beaten.
-      Anyone who fainted in it is <b>Winded</b> (Rule 26) — rotate them before the next one.</p>`;
+    h += `<p class="note" style="margin:2px 0 12px">Tap a battle to mark it beaten.${isRetire()
+      ? ' Anyone who faints in one is <b>retired</b> for good (Rule 40).'
+      : tours() ? ' A faint here costs nothing — only a spent tour hands a chair on (Rules 26–27).'
+      : ''}</p>`;
     h += '<div class="listgrid">' + list.map((b,i)=>{
       const [label,col] = KIND[b[3]] || KIND.custom;
       const on = !!S.beat[i];
@@ -2080,8 +2084,9 @@ function toggleBattle(i){
     for (let j = c[0]; j <= c[1]; j++) if (battleList()[j][3] === 'champ') return true;
     return false; })();
   if (champInChain && counts){ openSummary(); return; }   // that's the run
-  // Open Lineage has no Winded rule, so who went down is nobody's business but yours (Rule 41).
-  if (counts && !isPD() && !isOpen() && party().length){ askWhoFainted(i); return; }
+  // Only Retirement cares who fainted, because only there does it cost anything (Rule 40).
+  // Rotation deliberately doesn't ask: see Rule 27 for why fainting to skip a tour is out.
+  if (counts && isRetire() && party().length){ askWhoFainted(i); return; }
   postBattleFlow();
 }
 
@@ -2101,17 +2106,16 @@ function needsTour(){
 function hasHeir(m){ return heirs(m.slot).some(x => x.id !== m.id); }
 function discharged(){
   // There is no PC between Elite Four members, so a handover owed mid-gauntlet waits for
-  // the far side of it. The debt isn't cancelled — Winded flags and spent tours persist,
-  // and the gate fires for everyone at once when the Champion goes down.
+  // the far side of it. The debt isn't cancelled — a spent tour persists, and the gate fires
+  // for everyone at once when the Champion goes down.
   if (inGauntlet()) return [];
   const over = new Set(overCap().map(m => m.id));
-  return party().filter(m =>
-    hasHeir(m) && (over.has(m.id) || (tours() && (m.term === 0 || m.winded))));
+  // A spent tour or a broken cap — nothing else ends a chair any more (Rules 26–27, 29).
+  return party().filter(m => hasHeir(m) && (over.has(m.id) || (tours() && m.term === 0)));
 }
 // why is this one stepping down?
 function dischargeReason(m){
   if (overCap().some(x => x.id === m.id)) return `is over the cap (Lv ${esc(m.level)} > ${capNum()})`;
-  if (m.winded) return 'was Winded';
   return 'finished its tour';
 }
 function rollTourFor(id){
@@ -2162,7 +2166,7 @@ function openFinalPick(){
       .sort((a, b) => (a.caughtAt || 0) - (b.caughtAt || 0));
     rows += `<div class="grouphead" style="margin:14px 0 6px"><div class="pill">${s}</div>
       <span>${picks.length === 1 ? 'only one eligible' : picks.length + ' to choose from'}${
-        cur && cur.winded ? ' · <b style="color:var(--gold)">current holder is Winded</b>' : ''}</span></div>`;
+        ''}</span></div>`;
     rows += picks.map(m => {
       const on = m.status === 'party';
       const c = capNum();
@@ -2208,30 +2212,19 @@ function lockFinal(){
 
 function openTourRolls(){
   // An only child whose tour ran out re-enlists (Rule 26); clear the spent term so it rolls again.
-  const stuck = tours() ? party().find(m => m.term === 0 && !hasHeir(m) && !m.winded) : null;
+  const stuck = tours() ? party().find(m => m.term === 0 && !hasHeir(m)) : null;
   if (stuck) stuck.term = null;
   const n = needsTour()[0];
   if (n) rollTourFor(n.id);
   else { save(); render(); }
 }
 
-/* ---------- Winded (Rule 27) ----------
-   A Pokémon that faints in a Major Battle must rotate out before the next one —
-   unless its lineage has nobody else, in which case it simply stays. */
+/* ---------- who went down (Rules 27, 40) ----------
+   Rotation no longer asks: a faint there would only have let you cut a tour you disliked short,
+   which made the penalty a shortcut. This is Retirement's prompt, and the flag it sets lives
+   just long enough to turn into a retirement. */
 function windedList(){ return S.mons.filter(m => m.winded && m.status === 'party'); }
-// only those that CAN rotate actually owe you one
-function windedOwed(){
-  return windedList().filter(m =>
-    lineage(m.slot).some(x => x.id !== m.id && x.status === 'boxed'));
-}
-// In Rotation an only child re-enlists; in Retirement it is gone, so the chair simply empties.
-function clearStuckWinded(){
-  if (isRetire()) return;
-  let changed = false;
-  for (const m of windedList())
-    if (!lineage(m.slot).some(x => x.id !== m.id && x.status === 'boxed')){ m.winded = false; changed = true; }
-  return changed;
-}
+
 // one major down: every tour shortens by one
 function tickTours(){
   for (const m of party()){
@@ -2254,9 +2247,9 @@ function askWhoFainted(i){
     <p class="note" style="margin:0 0 10px">Tap everyone who went down ${many
       ? `anywhere in <b>${esc(gauntletName() || 'that run of fights')}</b> — it counted as one
          battle, so this is asked once at the end of it (Rule 37)`
-      : 'in that fight'}. ${isRetire()
-        ? 'In Retirement mode they are <b>retired for good</b> (Rule 40) — still yours, still in the Box, but never fielded again.'
-        : 'They become <b>Winded</b> (Rule 27) and hand their chair over <b>right away</b> — unless their lineage has nobody else, in which case they simply stay.'}</p>
+      : 'in that fight'}. They are <b>retired for good</b> (Rule 40) \u2014 still yours, still in the Box,
+      but never fielded again. Only Retirement asks this: in Rotation a faint at a wall costs you
+      nothing at all (Rule 27).</p>
     ${p.map(m=>`<div class="row" onclick="markWinded(${m.id}, this)">
       ${portrait(m,'sm')}
       <div class="info"><div class="nick">${esc(m.nick)} ${genderMark(m.gender)}</div>
@@ -2283,30 +2276,25 @@ function nobodyFainted(){
   save(); render();
   postBattleFlow();          // a clean fight can still end a tour
 }
+// Only Retirement reaches this: Rule 40 takes everyone ticked, immediately and for good.
 function finishWinded(){
   const w = windedList();
   if (w.length){
-    if (isRetire()){
-      // Rule 40: at a wall, Winded is permanent. They leave the chair now rather than waiting.
-      for (const m of w){
-        m.retired = true; m.winded = false; m.term = null;
-        m.status = 'boxed'; m.retiredAt = Date.now();
-      }
-      logIt('⚰️', `<b>${w.map(m=>esc(m.nick)).join(', ')}</b> went down at a Major Battle and
-        ${w.length===1?'is':'are'} <b>retired</b> — still yours, never fields again.`);
-    } else {
-      logIt('💨', `<b>${w.map(m=>esc(m.nick)).join(', ')}</b> ${w.length===1?'is':'are'}
-        <b>Winded</b> — tour over.`);
+    for (const m of w){
+      m.retired = true; m.winded = false; m.term = null;
+      m.status = 'boxed'; m.retiredAt = Date.now();
     }
+    logIt('⚰️', `<b>${w.map(m=>esc(m.nick)).join(', ')}</b> went down at a Major Battle and
+      ${w.length===1?'is':'are'} <b>retired</b> — still yours, never fields again.`);
   }
-  clearStuckWinded();
   save(); render();
   if (isRetire() && !fieldable().length){ openSummary(); return; }   // nothing left to field
   postBattleFlow();          // Rule 27: the handover happens now, not "before the next major"
 }
 
 /* ---------- the rotation gate ----------
-   Locked open until every Winded Pokémon with a bench has actually been rotated out.
+   Locked open until everyone whose tour is spent, or who broke the cap, has actually
+   been rotated out.
    No skip button: leaving it open is the only thing you could do instead, and the
    debt would still be sitting there. */
 function rotateGate(){
@@ -2323,9 +2311,10 @@ function rotateGate(){
       ? `${owed.length===1?'This Pokémon has':'These Pokémon have'} climbed past the level cap, so
          ${owed.length===1?'it steps':'they step'} down until the cap moves (Rule 29). Head to a PC and
          pick ${owed.length===1?'its':'their'} replacement.`
-      : `${owed.length===1?'This Pokémon':'These Pokémon'} went down in that battle, so
-         ${owed.length===1?'it':'they'} ${owed.length===1?'hands':'hand'} the chair over <b>straight away</b>
-         (Rule 26) — not later, not just before the next gym. Head to a PC and pick
+      : `${owed.length===1?'This Pokémon has':'These Pokémon have'} run
+         ${owed.length===1?'its':'their'} tour out, so ${owed.length===1?'it hands':'they hand'} the
+         chair over <b>straight away</b> (Rule 26) — not later, not just before the next gym. A faint
+         in that battle had nothing to do with it (Rule 27). Head to a PC and pick
          ${owed.length===1?'its':'their'} successor.`}</p>
     ${owed.map(m=>`<div class="grouphead" style="margin:14px 0 6px">
         <div class="pill">${m.slot}</div>
@@ -2375,7 +2364,7 @@ function drawHeir(slot){
 }
 
 function rotateInto(id){
-  swapIn(id);              // clears the outgoing Pokémon's Winded flag
+  swapIn(id);              // the outgoing Pokémon's tour ends with the chair
   rotateGate();            // straight back to the gate for anyone still owed
 }
 // an escape for mis-taps only: it returns you to the faint prompt, it doesn't clear the debt
@@ -2384,10 +2373,11 @@ function undoFaint(){
   askWhoFainted(-1);
 }
 function nagWinded(owed, i){
-  sheet(`<h3>💨 Rotate first</h3>
-    <p class="note" style="margin:0 0 10px">${owed.length===1?'This Pokémon':'These Pokémon'} fainted in your
-      last Major Battle, or ran their tour out, and ${owed.length===1?'has':'have'} a bench to fall back
-      on — so ${owed.length===1?'it hands':'they hand'} the chair over first (Rules 26–27).</p>
+  sheet(`<h3>📜 Rotate first</h3>
+    <p class="note" style="margin:0 0 10px">${owed.length===1?'This Pokémon':'These Pokémon'} ran
+      ${owed.length===1?'its':'their'} tour out, or went past the level cap, and
+      ${owed.length===1?'has':'have'} a bench to fall back on — so ${owed.length===1?'it hands':'they hand'}
+      the chair over first (Rules 26, 29).</p>
     ${owed.map(m=>`<div class="row">
       ${portrait(m,'sm')}
       <div class="info"><div class="nick">${esc(m.nick)}</div>
@@ -3598,7 +3588,7 @@ a Stray — it keeps the number but never takes the chair (Rule 33).`);
     return;
   }
   const out = inSlot(m.slot);
-  if (out){ out.status = 'boxed'; out.winded = false; out.term = null; }   // its tour is over
+  if (out){ out.status = 'boxed'; out.term = null; }   // its tour is over
   m.term = null;                                            // the newcomer rolls a fresh one
   m.status = 'party';
   logIt('⇄', out
@@ -3621,8 +3611,7 @@ function openDetail(id){
         return nt ? `<div class="note" style="margin:4px 0 0">${nt}</div>` : ''; })()}</dd>
       <dt>Lineage</dt><dd><b style="color:var(--gold)">${m.slot}</b> · ${lineage(m.slot).length} caught, ${bench.length} benched</dd>
       ${tours() && m.status==='party' ? `<dt>Tour</dt><dd>${
-        m.winded ? '<span style="color:var(--gold)">ended early — Winded</span>'
-        : m.term === 0 ? '<span style="color:var(--gold)">up — hands over at the next PC</span>'
+        m.term === 0 ? '<span style="color:var(--gold)">up — hands over at the next PC</span>'
         : m.term == null ? '<span style="color:var(--dim)">not rolled yet</span>'
         : `<b>${m.term}</b> major${m.term===1?'':'s'} left`}
         ${m.term == null ? `<button class="sw" style="margin-left:8px;padding:2px 10px"
