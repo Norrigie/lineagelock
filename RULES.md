@@ -255,7 +255,7 @@ Everything after the starter is unaffected — every other catch in the run stil
 
 **Rule 37 — A run of fights you can't leave is one wall.** Wherever the game marches you from one Major Battle straight into the next **without letting you reach a Box**, the whole run counts as **a single Major Battle** for every rule in this document.
 
-The Elite Four is the obvious case and the reason the rule exists. You walk in with six and you walk out with the same six: there is no Pokémon Centre between Lorelei and Bruno, so a ruleset that tries to bench somebody halfway through is asking for something you physically cannot do. It follows that:
+The Elite Four is the obvious case and the reason the rule exists. You walk in with six and you walk out with the same six: there is no Pokémon Centre between Lorelei and Bruno, so a ruleset that tries to bench somebody halfway through is asking for something you physically cannot do. **Which is exactly why you get to choose those six — see Rule 42.** It also follows that:
 
 - **One cap for the whole run, and it's the highest ace in it** — the Champion's, in practice. Set it before you go in and it does not move until you're out. Otherwise you'd be legal against the first member, illegally over the cap by the second, and holding a Pokémon you're neither allowed to use nor able to swap.
 - **Levelling up inside is free**, exactly as it is during any single major (Rule 29). Five hard battles will push your team up several levels and none of it counts against you.
@@ -356,6 +356,27 @@ What Open Lineage removes is every clock and every consequence layered on top:
 - **A long game.** Tours churn hard over sixty hours; someone playing a 250-hour ROM hack may want the lineage constraint to be the constraint and nothing more.
 
 **The honest caveat:** without tours, a good team stays your team. If you catch six strong Pokémon early, Open Lineage will mostly feel like a normal playthrough with an unusual party, and the Box will sit unused. That is exactly what some people want, and it is worth knowing before you pick it — if you want to be *made* to use your Box, that's 🔁 Rotation.
+
+---
+
+**Rule 42 — 🏁 The Final Selection.** Standing at the doors of the Elite Four, before the first member, you get **one free pick from every lineage**. For each number 1–6, choose whichever member of that lineage you want to carry it into the last wall. Then the doors close.
+
+This is the only moment in Lineagelock where you choose your six outright.
+
+**Why it exists.** Rule 37 already says the League is one wall with no Box inside it, so the team you walk in with is the team that finishes the run. Without this rule, that team is whoever the die happened to leave in the chairs when you arrived — a lineage-1 Magikarp you rotated in two gyms ago gets to decide your ending. Forty hours of building six dynasties deserves better than an accident of timing.
+
+**Why it costs nothing.** Every other rule in this document is about *not* choosing: the die picks who you catch, which number they carry, how long they serve. Handing that back at the very end would normally be a real concession — except there is no run left to gain an advantage in. The League ends it. You are picking the cast for the last scene, not building a team you get to keep exploiting.
+
+**What it does and does not let you do.**
+
+- **It is still one per number.** Rule 2 is untouched: six chairs, one Pokémon each, and a lineage-3 Pokémon can only ever be your 3. You are choosing *within* each lineage, not across them.
+- **Only eligible members.** The Fallen (Rule 10) and the Retired (Rule 40) stay out — they are not eligible for a chair, and the last wall is no exception. Under Bloodline Purity a Stray is still a Stray (Rule 33).
+- **A lineage with one member has no choice**, and an empty lineage stays an empty chair. If the die never gave you a 5, you fight the League with five.
+- **Rule 28 applies.** Anyone you bring up from the Box may be trained to the level of whoever they replaced, capped at the level cap if it's on. Do that grinding *before* you walk in.
+- **Tours don't apply.** Nobody rolls a tour to enter the League, because the whole chain costs exactly one tour tick and it's charged at the end (Rule 37). If your chain doesn't end the run — Black · White's N and Ghetsis — tours resume normally on the far side.
+- **Once the first member is down, it's locked.** No swapping between Elite Four members. That is Rule 37, and it is the whole reason this rule exists.
+
+**It applies to every no-PC chain**, not just the League — anywhere Rule 37 makes a run of majors into one wall, the door to that run is a Final Selection. In practice that means the League everywhere, plus Black · White's N → Ghetsis and Sun · Moon's Guzma → Lusamine.
 ## 3. Quick Reference
 
 *Everything you need mid-run, on one screen. Rule numbers in brackets if you want the detail.*
@@ -384,7 +405,7 @@ What Open Lineage removes is every clock and every consequence layered on top:
 4. **Nothing is ever released**, in any mode [13].
 5. **Tours** [26] — in every mode except 🔓 Open Lineage, every Pokémon rolls a die when it takes a chair; that's how many majors it serves before handing over. A faint in a major ends its tour on the spot [27]. Whoever takes the chair may be levelled to match [28].
 
-**The Elite Four** (and any run with no Box between fights) counts as **one** Major Battle: one cap, free levelling, one faint question, **one** tour tick, and every handover deferred to the far side [37].
+**The Elite Four** (and any run with no Box between fights) counts as **one** Major Battle: one cap, free levelling, one faint question, **one** tour tick, and every handover deferred to the far side [37]. At its door you get **one free pick from every lineage** — the only time you choose your six outright [42].
 
 **Battling** — Set mode, no items in battle [24]. Field moves are free, no slot needed [21].
 
@@ -456,6 +477,7 @@ The starter options and the level cap used to live here; they're now Rules 36 an
 - **Presets** — a ⚡ row above the setup steps with six named starting points (Rule 39). One tap sets the mode, the encounter rule, the battle scope and all seven dials; the row then shows which preset you are on, and clears itself the moment you change anything by hand.
 - **Open Lineage mode** — the mode picker's first card, and the switch that hides everything the mode doesn't have: no tour rolls, no tour column on the chairs, no faint prompt after a major, and the random-succession and tour-length dials are gone from the setup screen rather than sitting there doing nothing (Rule 41).
 - **Retirement mode** — the faint prompt says outright that anyone you tick is retired for good, and the Box grows a **Retired** section, separate from the Fallen memorial, for Pokémon that are still yours but done competing (Rule 40).
+- **The Final Selection** — a 🏁 card appears on the Overview the moment the League is the next wall and none of it is beaten. It lays out all six lineages with everyone eligible to carry their number in, shows who you'd have to train and how far, and swaps on a tap; *Lock it in* records the team in the log. Once the first member goes down the tracker refuses swaps outright and says why (Rules 37, 42).
 - **Where each wall is** — every one of the **528 bundled majors** names the place it happens: the town, gym, cave or route, on the Next Major card and on every row of the checklist. Decay's 57 were read out of the game's own map files, since its dev sheet records levels but not places.
 - **Which battles count** — a setup step listing only the categories your game has, with how many battles each one holds. Switch rivals or the League off and the Progress tab greys them out as *not counted this run*: still tickable, but no longer moving the cap or ticking tours (Rule 38).
 - **The seven dials** (⚙️ on the setup screen) — level cap, random succession, tour length, bloodline purity, method lock, shiny clause and starter style, per Rules 29–30 and 32–36. Each one says what it does before you switch it on, and the setup card lists whichever you've enabled.

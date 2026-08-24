@@ -133,6 +133,7 @@
     border-left:3px solid var(--gold);border-radius:12px;padding:10px 12px;margin:16px 0 0;cursor:pointer}
   .nextup:active{background:var(--card2)}
   .nextup.warn{border-left-color:var(--red)}
+  .nextup.final{border-left-color:var(--gold);background:linear-gradient(90deg,#241d0e,var(--card))}
   .nextup .nlabel{font-size:9.5px;font-weight:900;letter-spacing:1.2px;color:var(--dim);
     writing-mode:vertical-rl;transform:rotate(180deg)}
   .nextup .nname{flex:1;min-width:0;font-weight:800;font-size:15.5px}
@@ -729,7 +730,7 @@ function blankRun(name, seed){
     game:null, beat:{}, custom:[], mode:null, encMode:null, lastArea:'',
     areas:{}, customAreas:[], levelCap:false, succession:'choose', cap:'',
     tourDie:6, blood:false, bloodType:{}, shinyClause:false, starter:'full',
-    mlock:false, methods:{}, capOK:{}, capFix:{},
+    mlock:false, methods:{}, capOK:{}, capFix:{}, finalPick:{},
     majors:{ gyms:true, trials:true, paldea:true, nobles:true, rivals:true,
              teams:true, league:true, postgame:false }, preset:null };
 }
@@ -750,7 +751,7 @@ function fixRun(d, i){
   d.shinyClause = !!d.shinyClause;
   d.starter = ['full','half','trad'].includes(d.starter) ? d.starter : 'full';
   d.mlock = !!d.mlock; d.methods = d.methods || {};
-  d.capOK = d.capOK || {}; d.capFix = d.capFix || {};
+  d.capOK = d.capOK || {}; d.capFix = d.capFix || {}; d.finalPick = d.finalPick || {};
   d.majors = Object.assign({ gyms:true, trials:true, paldea:true, nobles:true, rivals:true,
     teams:true, league:true, postgame:false }, d.majors || {});
   d.preset = d.preset || null;
@@ -977,6 +978,22 @@ function inGauntlet(){
   for (let i = g.a; i <= g.z; i++) if (S.beat[i]) return true;
   return false;
 }
+// Standing at the entrance with none of it beaten yet — the one moment Rule 42 opens.
+function atFinalDoor(){
+  const g = gauntlet();
+  return !!g && !inGauntlet();
+}
+// A chain that ends the run deserves the full ceremony; one that doesn't still gets the choice,
+// because the reason is the same either way: no PC until it's over.
+function finalIsEnd(){
+  const g = gauntlet();
+  if (!g) return false;
+  for (let i = g.a; i <= g.z; i++) if (g.list[i][3] === 'champ') return true;
+  return false;
+}
+const finalKey = () => { const g = gauntlet(); return g ? 'g' + g.a + '-' + g.z : null; };
+const finalDone = () => { const k = finalKey(); return !k || !!S.finalPick[k]; };
+
 function gauntletAce(){
   const g = gauntlet();
   if (!g) return null;
@@ -1516,6 +1533,15 @@ function viewParty(){
         owed ? '⚠ rotate first' : '✓ Beat it'}</button>
       <div class="ngo">›</div></div>`;
   }
+  // Rule 42: one free pick per lineage before the doors close. Shown until you lock it in, and
+  // reachable again from the Overview afterwards in case you change your mind at the threshold.
+  if (atFinalDoor()) h += `<div class="nextup final" onclick="openFinalPick()">
+      <div class="nlabel">FINAL</div>
+      <div class="nname">${finalDone() ? 'Team locked in' : 'Choose your six'}<span>${finalDone()
+        ? `tap to change it — you may still swap until ${esc(gauntletName())} starts`
+        : `one free pick from every lineage before ${esc(gauntletName())}${finalIsEnd()
+            ? ' ends the run' : ''} (Rule 42)`}</span></div>
+      <div class="ngo">›</div></div>`;
   // No standing cap button — the cap is confirmed once per wall after the major that brings it
   // into range, and shown on the NEXT MAJOR line. This only speaks up when something is wrong,
   // because an over-cap Pokémon with no heir wouldn't surface anywhere else.
@@ -2065,7 +2091,12 @@ function toggleBattle(i){
    Open Lineage deliberately has none at all (Rule 41). */
 const tours = () => !isPD() && !isOpen();
 // a party member with no tour rolled yet
-function needsTour(){ return tours() ? party().filter(m => m.term == null) : []; }
+// A Pokémon fielded for the gauntlet rolls its tour on the far side, not at the door: tours tick
+// once for the whole chain (Rule 37), and if the chain ends the run there is nothing to serve.
+function needsTour(){
+  if (!tours() || gauntlet()) return [];
+  return party().filter(m => m.term == null);
+}
 // tour ran out (or a faint ended it early) AND there's someone to hand over to
 function hasHeir(m){ return heirs(m.slot).some(x => x.id !== m.id); }
 function discharged(){
@@ -2109,6 +2140,70 @@ function postBattleFlow(){
     return;
   }
   closeSheet();
+}
+
+/* ---------- Final Selection (Rule 42) ----------
+   Every lineage laid out at once, with whoever is eligible to carry its number into the last
+   wall. Tapping a name fields it; swapIn does the actual work, so purity, retirement and the
+   rest of the rules apply exactly as they do at any PC. */
+function openFinalPick(){
+  const g = gauntlet();
+  if (!g) { closeSheet(); return; }
+  let rows = '';
+  for (let s = 1; s <= 6; s++){
+    const line = lineage(s);
+    if (!line.length){
+      rows += `<div class="grouphead" style="margin:14px 0 6px"><div class="pill">${s}</div>
+        <span style="color:var(--dim)">no lineage ${s} — that chair stays empty</span></div>`;
+      continue;
+    }
+    const cur = inSlot(s);
+    const picks = line.filter(m => canField(m) && pureFor(m))
+      .sort((a, b) => (a.caughtAt || 0) - (b.caughtAt || 0));
+    rows += `<div class="grouphead" style="margin:14px 0 6px"><div class="pill">${s}</div>
+      <span>${picks.length === 1 ? 'only one eligible' : picks.length + ' to choose from'}${
+        cur && cur.winded ? ' · <b style="color:var(--gold)">current holder is Winded</b>' : ''}</span></div>`;
+    rows += picks.map(m => {
+      const on = m.status === 'party';
+      const c = capNum();
+      const lv = parseInt(m.level, 10) || 0;
+      return `<div class="row" style="${on ? 'border-color:var(--green)' : ''}"
+          onclick="pickFinal(${m.id})">
+        ${portrait(m, 'sm')}
+        <div class="info"><div class="nick">${esc(m.nick)} ${genderMark(m.gender)}${on
+          ? ' <span style="color:var(--green);font-size:11px;font-weight:800">FIELDING</span>' : ''}</div>
+          <div class="meta">${esc(pretty(m.species))}${m.level ? ' · Lv ' + m.level : ''}${
+            S.levelCap && c && lv && lv < c ? ` · <b style="color:var(--gold)">may train to Lv ${c}</b>` : ''}</div>
+        </div>
+        ${on ? '' : '<button class="sw">take it</button>'}
+      </div>`;
+    }).join('');
+    if (!picks.length) rows += '<div class="empty">Nobody in this lineage can be fielded.</div>';
+  }
+  sheet(`<h3>\u{1F3C1} Final Selection</h3>
+    <p class="note" style="margin:0 0 4px">${esc(gauntletName())} is <b>one wall</b> with no PC
+      inside it (Rule 37)${finalIsEnd() ? ', and the run ends when it does' : ''}. So the team you
+      walk in with is the team that finishes \u2014 and this is the one time Lineagelock lets you
+      <b>choose it outright</b> (Rule 42).</p>
+    <p class="note" style="margin:0 0 12px">One pick from each lineage. Tours don't apply here, and
+      anyone you bring up may be trained to the cap first (Rule 28).</p>
+    ${rows}
+    <div class="acts" style="margin-top:16px">
+      <button class="btn" onclick="lockFinal()">\u2713 Lock it in</button>
+    </div>`);
+}
+function pickFinal(id){
+  swapIn(id);
+  openFinalPick();          // stay on the sheet: you are picking six, not one
+}
+function lockFinal(){
+  const k = finalKey();
+  if (k && !S.finalPick[k]){
+    S.finalPick[k] = Date.now();
+    logIt('\u{1F3C1}', `Final Selection locked for <b>${esc(gauntletName())}</b>:
+      ${party().map(m => `${esc(m.nick)} (${m.slot})`).join(', ') || 'nobody'}.`);
+  }
+  save(); render(); closeSheet();
 }
 
 function openTourRolls(){
@@ -3486,6 +3581,13 @@ function doEvolve(id, to){
 function swapIn(id){
   const m = mon(id);
   if (!m || m.status === 'party' || m.status === 'fallen') return;
+  // There is no PC between the members of a chain, so the roster is frozen once it starts
+  // (Rule 37). The Final Selection at the door is where this choice was yours (Rule 42).
+  if (inGauntlet()){
+    alert(`There's no PC inside ${gauntletName()} — the team you started it with is the team that
+finishes it (Rule 37). Your Final Selection was made at the door (Rule 42).`);
+    return;
+  }
   if (m.retired){
     alert(`${m.nick} is retired — it fainted at a Major Battle and is done competing (Rule 40).`);
     return;
