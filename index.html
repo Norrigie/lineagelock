@@ -1770,7 +1770,9 @@ function encModeName(){
        : S.encMode === 'all'      ? "🌍 Catch 'em all" : 'Not set';
 }
 // One catch per area, however it was chosen.
-const oneEach = () => S.encMode === 'first' || S.encMode === 'audition';
+// Every method but Catch 'em All spends the area on one catch (Rule 15) — the Wheel included:
+// it picks which species you may take there, not how many.
+const oneEach = () => !isAll();
 const isAll = () => S.encMode === 'all';
 function encKey(){ return S.game ? (ENC_ALIAS[S.game] || S.game) : null; }
 function encTables(){ const k = encKey(); return (k && ENC[k]) || null; }
@@ -1837,15 +1839,26 @@ function whereField(cur){
   if (!areas.length)
     return `<input type="text" id="fWhere" value="${esc(cur||'')}" placeholder="Route 1" autocomplete="off">`;
   const known = areas.includes(cur) || isOrigin(cur);
+  // One catch per area (Rule 19) means a used or burned area is not on offer any more. Whatever
+  // this record already says stays selectable, so editing a Pokémon can't silently lose its place.
+  const shown = oneEach()
+    ? (()=>{ const c = areaCatches();
+             return areas.filter(a => a === cur || areaState(a, c) === 'open'); })()
+    : areas;
+  const hidden = areas.length - shown.length;
   return `<select id="fWhere" onchange="whereOther()">
       <option value="" ${!cur?'selected':''}>—</option>
       ${cur && !known ? `<option value="${esc(cur)}" selected>${esc(cur)}</option>` : ''}
       <optgroup label="Not a route">${ORIGINS.map(o =>
         `<option value="${esc(o)}" ${o===cur?'selected':''}>${esc(o)}</option>`).join('')}</optgroup>
-      <optgroup label="${esc(gameName()||'Locations')}">${
-        areas.map(a=>`<option value="${esc(a)}" ${a===cur?'selected':''}>${esc(a)}</option>`).join('')}</optgroup>
+      <optgroup label="${esc(gameName()||'Locations')}${hidden
+        ? ` — ${shown.length} still open` : ''}">${
+        shown.map(a=>`<option value="${esc(a)}" ${a===cur?'selected':''}>${esc(a)}</option>`).join('')}</optgroup>
       <option value="__other">Somewhere else…</option>
     </select>
+    ${hidden ? `<p class="note" style="margin:6px 0 0">${hidden} location${hidden===1?'':'s'} already
+      spent \u2014 hidden, because ${esc(encModeName())} allows one catch each (Rule 19). The Routes tab
+      still lists them all.</p>` : ''}
     <input type="text" id="fWhereOther" placeholder="type the location" autocomplete="off"
       style="margin-top:8px;display:none">`;
 }
