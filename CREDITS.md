@@ -12,6 +12,8 @@ this file records where each piece came from and under what terms.
 | Historical (per-generation) typings | [PokéAPI](https://pokeapi.co/), verified against [Serebii](https://www.serebii.net/) | Factual game data |
 | Ace levels for 465 major battles | [Serebii](https://www.serebii.net/), [Bulbapedia](https://bulbapedia.bulbagarden.net/), [Nuzlocke University](https://nuzlockeuniversity.ca/), [Game8](https://game8.co/) | Factual game data, cross-checked between sources |
 | Pokémon Decay battle list, areas, roster and typings | The Decay developers' public spreadsheets and the game's own `PBS` files | Factual game data |
+| Pokémon Xenoverse roster, typings, evolutions, areas and battle list | The game's own `PBS` files, compiled trainer data and translation file | Factual game data |
+| Xenoverse gym order and league structure | [Pokémon Xenoverse Wiki](https://pokemon-xenoverse.fandom.com/) | **CC BY-SA** — used to confirm ordering read from the game |
 
 **Why the whole project is CC BY-SA 4.0.** Behind the Name publishes its name data under CC BY-SA
 4.0, which is a *share-alike* licence. The bundled theme pools are baked into the single HTML file
@@ -44,9 +46,10 @@ portraits would have to go before that happened.
 
 ## Deliberately not included
 
-**Pokémon Decay's artwork.** The 560 icons belong to the game's developers. They are not in this
-repository and must not be added to it. `tools/build-decay-sprites.mjs` generates the sidecar from
-your own installed copy instead, and `.gitignore` keeps the result out of version control.
+**The fan games' artwork.** Decay's 560 icons belong to its developers, and Xenoverse's 853 belong
+to the XenoTeam. Neither set is in this repository and neither must be added to it.
+`tools/build-decay-sprites.mjs` and `tools/build-xeno-sprites.mjs` generate the sidecars from your
+own installed copies instead, and `.gitignore` keeps the results out of version control.
 
 **Any Nintendo, Creatures Inc. or GAME FREAK asset.** No sprites, music, text or ROM data from an
 official game appears here. What the tracker knows about those games is factual — which trainer

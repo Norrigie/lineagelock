@@ -1,6 +1,7 @@
-# Pokémon Decay's icon pack is the developers' artwork, not ours to redistribute.
-# Generate it locally with tools/build-decay-sprites.mjs; never commit it.
+# The fan games' icon packs are their developers' artwork, not ours to redistribute.
+# Generate them locally with the tools in tools/; never commit them.
 decay-sprites.js
+xeno-sprites.js
 
 # editor / OS noise
 .DS_Store
