@@ -3802,6 +3802,12 @@ function openDetail(id){
     <div id="natEdit">${statStrip(m.nature)}</div>
     <label for="fWhere">Caught at</label>
     ${whereField(m.where || '')}
+    <label style="display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:0;
+      margin-top:12px;font-size:13px">
+      <input type="checkbox" id="eShiny" style="width:auto;margin:0" ${m.shiny?'checked':''}>
+      \u2728 Shiny${S.shinyClause
+        ? " — a free catch that doesn't spend its area's encounter (Rule 35)"
+        : ' — recorded on the card; the Shiny Clause is off, so it changes nothing else'}</label>
     <p class="note">Lineage ${m.slot} is permanent — it survives evolution, boxing and levelling.
       Nothing in Lineagelock changes a Pokémon's number (Rule 1). Battle order stays free (Rule 11) —
       it just moves too often to be worth tracking here.</p>
@@ -3848,6 +3854,19 @@ function saveEdit(id){
       NATURES[nat] ? `+10% ${STATS[NATURES[nat][0]]}, −10% ${STATS[NATURES[nat][1]]}` : 'no stat effect'}.`);
   }
   setWhere(m, readWhere());
+  const sh = !!(document.getElementById('eShiny') || {}).checked;
+  if (sh !== !!m.shiny){
+    m.shiny = sh;
+    logIt('\u2728', `<b>${esc(m.nick)}</b> ${sh ? 'marked shiny' : 'is not shiny after all'}.`);
+    // Rule 35 was excusing this catch; without it the area may now hold two.
+    if (!sh && S.shinyClause && oneEach() && m.where && !isOrigin(m.where)){
+      const also = areaCatches()[Object.keys(areaCatches()).find(a =>
+        norm(deFloor(a)) === norm(deFloor(m.where)))] || [];
+      if (also.length > 1)
+        logIt('\u{1F4CD}', `<b>${esc(m.where)}</b> now has <b>${also.length}</b> catches on it
+          \u2014 ${esc(m.nick)} was only allowed there by the Shiny Clause (Rules 19, 35).`);
+    }
+  }
   save(); render(); closeSheet();
 }
 
