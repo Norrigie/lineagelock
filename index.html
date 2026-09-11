@@ -110,6 +110,9 @@
   /* Type badges, matching pokemondb.net: squared 4px corners, uppercase, white text
      with a soft drop shadow so the lighter types stay readable. */
   .types{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
+  /* beside a battle's name rather than under a portrait: inline, small, no top margin */
+  .nname .types, .bname .types{display:inline-flex;margin:0 0 0 7px;vertical-align:middle}
+  .nname .tbadge, .bname .tbadge{min-width:0;font-size:9px;line-height:14px;padding:0 6px}
   .slot .types{padding-right:46px}          /* clears the bench-depth chip */
   .slot{padding-bottom:14px}
   .tbadge{display:inline-block;min-width:58px;padding:1px 7px;border-radius:4px;
@@ -1537,6 +1540,31 @@ function typeBadges(types, cls){
       typeCol(x) ? '' : ';color:var(--dim);text-shadow:none'}">${esc(pretty(x))}</span>`).join('') + '</div>';
 }
 function monBadges(m, cls){ return typeBadges(monTypes(m), cls); }
+
+// A wall's type speciality, where the game has one. It lives in the battle's note, sometimes on
+// its own ("Water"), sometimes inside a phrase ("Grand Trial — Fighting", "Team Star — Dark",
+// "Lurking Steel Titan"), and sometimes doubled ("Rock / Ice"). Whole-word matching only, so
+// "Rival" and "Lord of the Woods" quite correctly yield nothing.
+function battleTypes(b){
+  const note = String((b && b[1]) || '');
+  if (!note) return [];
+  const out = [];
+  for (const ty of TYPE_LIST){
+    const at = note.search(new RegExp('\\b' + ty + '\\b', 'i'));
+    if (at >= 0) out.push([at, ty]);
+  }
+  // in the order the note writes them, so "Rock / Ice" reads ROCK ICE
+  return out.sort((a, b) => a[0] - b[0]).map(x => x[1]);
+}
+// What's left of the note once its type words have been lifted out, so nothing is said twice.
+function battleNote(b){
+  let note = String((b && b[1]) || '');
+  const found = battleTypes(b);
+  if (!found.length) return note;     // nothing lifted out, so nothing to tidy up after
+  for (const ty of found) note = note.replace(new RegExp('\\b' + ty + '\\b', 'ig'), '');
+  return note.replace(/[\u2014\u00b7\/&,+-]+/g, ' ').replace(/\s{2,}/g, ' ').trim()
+    .replace(/^[\s\u2014\u00b7\/,-]+|[\s\u2014\u00b7\/,-]+$/g, '');
+}
 // The chair itself wears the type: a solid fill for one, a hard split for two.
 function typeFill(types){
   const c1 = typeCol((types||[])[0]), c2 = typeCol((types||[])[1]);
@@ -1670,7 +1698,8 @@ function viewParty(){
     const owed = discharged().length || needsTour().length;
     h += `<div class="nextup" onclick="tab='progress';pane='battles';render()">
       <div class="nlabel">NEXT MAJOR</div>
-      <div class="nname">${esc(nx.b[0])}<span>${esc(nx.b[1]||'')}${nx.b[2]?' · 📍 '+esc(nx.b[2]):''}${
+      <div class="nname">${esc(nx.b[0])}${typeBadges(battleTypes(nx.b))}<span>${
+        esc(battleNote(nx.b))}${nx.b[2]?(battleNote(nx.b)?' · ':'')+'📍 '+esc(nx.b[2]):''}${
         (()=>{ const ace = wallAce(), cap = S.levelCap ? capNum() : null;
           if (!ace && !cap) return '';
           // When a weaker wall follows a stronger one the cap is held above this ace (Rule 29),
@@ -2265,8 +2294,8 @@ function viewBattles(){
       return `<div class="bat ${on?'done':''} ${out?'muted':''}" onclick="toggleBattle(${i})">
         <div class="tick">${on?'✓':''}</div>
         <div class="binfo">
-          <div class="bname">${esc(b[0])}</div>
-          <div class="bmeta">${esc(b[1])}${b[2]?` · 📍 ${esc(b[2])}`:''}${
+          <div class="bname">${esc(b[0])}${typeBadges(battleTypes(b))}</div>
+          <div class="bmeta">${esc(battleNote(b))}${b[2]?`${battleNote(b)?' · ':''}📍 ${esc(b[2])}`:''}${
           b[4] && !out ?` · <b style="color:var(--gold)">Ace Level ${b[4]}</b>`:''}${
           out ? ' · <i>not counted this run</i>' : ''}</div>
         </div>
