@@ -841,6 +841,13 @@ function migrateBattles(d){
       if (i != null && isFinite(i)) beat[i] = d.beat[k] || beat[i];
     }
     d.beat = beat;
+    // The tour-tick records are keyed by battle index too, so they move with it (Rule 26).
+    const ticks = {};
+    for (const k of Object.keys(d.ticks || {})){
+      const i = shift(parseInt(k, 10));
+      if (i != null && isFinite(i) && ticks[i] == null) ticks[i] = d.ticks[k];
+    }
+    d.ticks = ticks;
     // 'b<i>' is a single battle, 'g<a>-<z>' a Rule 37 chain; both name indices.
     const rekey = obj => {
       const out = {};
@@ -879,7 +886,7 @@ function blankRun(name, seed){
     game:null, beat:{}, custom:[], mode:null, encMode:null, lastArea:'',
     areas:{}, customAreas:[], levelCap:false, succession:'choose', cap:'',
     tourDie:6, blood:false, bloodType:{}, shinyClause:false, starter:'full',
-    mlock:false, methods:{}, capOK:{}, capFix:{}, finalPick:{}, dataRev:DATA_REV,
+    mlock:false, methods:{}, capOK:{}, capFix:{}, finalPick:{}, ticks:{}, dataRev:DATA_REV,
     majors:{ gyms:true, trials:true, paldea:true, nobles:true, rivals:true,
              teams:true, league:true, optional:false, postgame:false }, preset:null };
 }
@@ -901,6 +908,7 @@ function fixRun(d, i){
   d.starter = ['full','half','trad'].includes(d.starter) ? d.starter : 'full';
   d.mlock = !!d.mlock; d.methods = d.methods || {};
   d.capOK = d.capOK || {}; d.capFix = d.capFix || {}; d.finalPick = d.finalPick || {};
+  d.ticks = d.ticks || {};
   // Winded no longer exists outside Retirement's own prompt (Rule 27), and a run saved under
   // the old rule could otherwise carry a flag with nothing left to clear it.
   for (const m of (d.mons || [])) delete m.winded;
@@ -2315,7 +2323,19 @@ function viewBattles(){
 function toggleBattle(i){
   const b = battleList()[i];
   if (!b) return;
-  if (S.beat[i]){ delete S.beat[i]; save(); render(); return; }
+  if (S.beat[i]){
+    delete S.beat[i];
+    // Only a wall that actually charged a tour can give one back: a battle outside this run's
+    // scope (Rule 38), or one partway through a chain, never ticked in the first place.
+    const charged = tours() && chainEnd(i) && !offList(b);
+    const gave = charged ? untickTours(i) : 0;
+    logIt('↩️', `<b>${esc(b[0])}</b> un-marked${gave
+      ? ` — ${Math.abs(gave)} tour${Math.abs(gave) === 1 ? '' : 's'} given back${
+          gave < 0 ? ', approximately: this wall was ticked before the tracker recorded them' : ''}`
+      : ''}.`);
+    save(); render();
+    return;
+  }
   const owed = discharged();
   if (owed.length){ nagWinded(owed, i); return; }      // Rules 26–27 come first
   if (needsTour().length){ openTourRolls(); return; }  // and every chair needs a tour
@@ -2325,7 +2345,7 @@ function toggleBattle(i){
   // tours tick once, the faint question is asked once, and the cap moves once — all at the end.
   const done = chainEnd(i);
   const counts = !offList(b);                 // out of scope: tick it, but it changes nothing
-  if (done && counts && tours()) tickTours();
+  if (done && counts && tours()) (S.ticks ||= {})[i] = tickTours();
   capPending = (done && counts) ? i : null;
   save(); render();
   if (!done){
@@ -2481,9 +2501,12 @@ function openTourRolls(){
 function windedList(){ return S.mons.filter(m => m.winded && m.status === 'party'); }
 
 // one major down: every tour shortens by one
+// Returns [[id, the term it had before], ...] so the tick can be undone exactly.
 function tickTours(){
+  const was = [];
   for (const m of party()){
     if (typeof m.term !== 'number') continue;
+    was.push([m.id, m.term]);
     m.term = Math.max(0, m.term - 1);
     if (m.term === 0 && !hasHeir(m)){
       m.term = null;                       // an only child re-enlists
@@ -2492,6 +2515,22 @@ function tickTours(){
       logIt('📜', `<b>${esc(m.nick)}</b>'s tour is up — it hands lineage ${m.slot} over.`);
     }
   }
+  return was;
+}
+// Put back what the tick took. Anything recorded is restored to the exact term it had, including
+// a Pokémon that re-enlisted and whose term became null.
+function untickTours(i){
+  const rec = S.ticks && S.ticks[i];
+  if (rec){
+    for (const [id, term] of rec){ const m = mon(id); if (m) m.term = term; }
+    delete S.ticks[i];
+    return rec.length;
+  }
+  // A run ticked before this was recorded has nothing to restore from, so give the obvious thing
+  // back and say it was approximate rather than silently leaving the tours short.
+  let n = 0;
+  for (const m of party()) if (typeof m.term === 'number'){ m.term = m.term + 1; n++; }
+  return n ? -n : 0;
 }
 
 function askWhoFainted(i){
