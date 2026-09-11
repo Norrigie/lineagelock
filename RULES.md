@@ -64,7 +64,9 @@ Every Nuzlocke run eventually becomes the same story: you get attached, somethin
 
 ### B. Choose Your Mode
 
-**Rule 8 — Pick a mode before you take a single step, and it's binding.** Lineagelock runs in one of four modes, chosen at setup and locked for the whole run. Declare it in the tracker before your first catch. No switching halfway because a gym went badly.
+**Rule 8 — Pick a mode before you take a single step.** Lineagelock runs in one of four modes, chosen at setup and meant to be held for the whole run. Declare it in the tracker before your first catch. **Don't switch halfway because a gym went badly** — that is how a challenge run stops being one.
+
+The tracker used to refuse outright once you had caught something, which also caught every honest case: picking Rotation before you understood tours, wanting Retirement's teeth forty hours in, or simply mis-tapping at setup. So it now lets you change it, tells you exactly what the change does, and **writes it in the log** — a run's history says plainly what it was played under. What already happened stands: the Fallen stay fallen and the Retired stay retired, because those things happened.
 
 | | **🔓 Open Lineage** | **🔁 Rotation** | **⚰️ Retirement** | **☠️ Permadeath** |
 |---|---|---|---|---|
@@ -114,7 +116,7 @@ Your run's identity is decided by two dice before you've fought anything. If you
 
 It's the option for people who find First Encounter too arbitrary and Catch 'em All too generous. You still can't have what the area never offered — a route with three species has three candidates, and no amount of looking will turn one into a Dratini — but you're never handed a Zubat and told that's your Route 4. Like First Encounter it needs no bundled data, so it works on any game, any ROM hack, any randomiser.
 
-**The moment you throw a ball is the moment you commit.** Miss it, and the area is spent (Rule 18) — otherwise auditioning never ends and the rule does no work. Walking away from a Pokémon you don't want costs nothing; failing to catch the one you do costs you the area.
+**You commit when the Pokémon is caught, not before.** A Pokémon that flees, faints or breaks out costs you nothing at all — the audition simply carries on. Audition is the one encounter rule where an area can never be burned: it is spent by a catch and by nothing else.
 
 No dupes clause, and here the reason is obvious: a ninth Zubat would be your own decision.
 
@@ -138,7 +140,7 @@ Why the wheel exists: "first encounter" secretly depends on which patch of grass
 
 You do not get to re-roll a bad number, and you do not get to re-encounter to fish for a species that suits an empty slot. First encounter, one ball, one roll, live with both. Yes, this means the shiny-looking Route 3 Abra can absolutely roll a 4 and go sit in the Box behind your starter for nine hours. That's the game.
 
-**Rule 18 — Failed encounters burn the area.** If your first encounter flees, faints, or you run out of balls, the area is spent — no catch, no roll, no second attempt. Move on. *(Under Audition you may walk away from as many encounters as you like for free — but once you throw a ball you have chosen, and losing that one burns the area like any other. Off entirely in Catch 'em All — there is nothing to burn.)*
+**Rule 18 — Failed encounters burn the area.** If your first encounter flees, faints, or you run out of balls, the area is spent — no catch, no roll, no second attempt. Move on. *(Off entirely under Audition — you commit by catching, so a fled or fainted encounter costs nothing and you keep looking. Off entirely in Catch 'em All too — there is nothing to burn.)*
 
 **Rule 19 — Gifts, statics, and in-game trades: rolled the same as anything else.** Every Pokémon that enters your possession gets a 1d6 roll, no matter how it got there. The Eevee handed to you in a lab, the Snorlax asleep in a road, the Lapras from a guy in a building, the Farfetch'd you got for a Spearow — all of them roll on arrival, all of them can land in an occupied slot and go straight to the Box. Gift and static Pokémon do **not** consume an area's first-encounter allowance (they aren't wild encounters), so you can take them freely — you just can't choose their number.
 
@@ -509,6 +511,7 @@ The starter options and the level cap used to live here; they're now Rules 36 an
 - **Natures** — record it on catch and the app shows exactly what it does: all five stats laid out with the +10% and −10% marked, plus the flavour it likes and dislikes. Editable later for anything you caught before checking.
 - **Typings, everywhere** — every Pokémon's type shows as a badge on its lineage card, in the catch form as you type the species, on the roll verdict, in the Box and on its detail sheet. The badges use [Pokémon Database](https://pokemondb.net/type/grass)'s own palette and squared-off shape, so they read the way you're used to. **Typings are correct for the era you're playing in**, not just the modern ones — see below. **The chair takes the colour too:** the numbered shape on each occupied lineage is filled with its holder's type — split diagonally for a dual type — and the card carries a wash of the same colour, so the party grid can be read by type at a glance.
 - **Fixing a mis-tap** — every field on a Pokémon's card is editable after the fact, **✨ shiny included**: tick it on or off at any time and the log records the correction. It matters more than it looks under the Shiny Clause (Rule 35), where a stray ✨ hands you a catch the area should have spent — so if removing one leaves that area holding two catches, the log says which Pokémon was only there on the clause's account.
+- **Changing your mind about the mode** — the mode picker stays open after a run has started. Choosing a different one shows what the change actually does given where you are — who keeps a tour, who starts rolling one, and that the Fallen and the Retired are not coming back — and records it in the log (Rule 8). The encounter rule stays locked, because it governs catches you have already made.
 - **Gender & ability** — ♂ / ♀ / genderless shown beside every nickname, and an ability dropdown that offers only the abilities that species can actually have, hidden ones flagged. That includes the fan games and the abilities they invented: catch Decay's Multip and it offers **Multiply** and a hidden **Motor Drive**, because the list is read from the game's own files rather than the national dex. The list re-offers correctly when a Pokémon evolves, and the free-text box behind *Other* suggests every ability the open game knows.
 - **Gender-aware names** — the 🎲 draws from Behind the Name's masculine / feminine / unisex split to match the Pokémon in front of you (Rule 23). **Set the gender first**, or it draws from the whole theme and tells you so; change the gender afterwards and it re-rolls, unless you typed the name yourself. Each roll says which pool it came from and links the entry, because a correct name can still look wrong — *Papa* is feminine, it's the Māori earth goddess.
 - **Starter flow** — both rolls from Rule 14, one after the other, or a single roll / no roll at all if you changed the starter style (Rule 36).

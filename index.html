@@ -1846,30 +1846,31 @@ function openModePicker(){
     <p class="note" style="margin:0 0 14px">Two questions, really: <b>what forces your six to
       change</b>, and <b>what does a faint cost you</b>. The lineage rule itself \u2014 one
       Pok\u00e9mon per number, a number never mixes \u2014 is identical in all four. ${locked
-        ? '<b style="color:var(--gold)">Locked \u2014 this run has already started (Rule 8).</b>'
-        : 'Locked in once you catch your first Pok\u00e9mon.'}</p>
-    <div class="modecard ${S.mode==='open'?'on':''}" ${locked?'':'onclick="setMode(\'open\')"'}>
+        ? 'This run has started. Rule 8 asks you to hold the mode you chose \u2014 you can still '
+          + 'change it, and the log will record that you did.'
+        : 'Meant to be chosen now and held for the whole run (Rule 8).'}</p>
+    <div class="modecard ${S.mode==='open'?'on':''}" onclick="setMode(\'open\')">
       <div class="mhead">\u{1F513} Open Lineage<span>${S.mode==='open'?'CURRENT':''}</span></div>
       <div class="mbody">The die decides <i>who you own and which number they carry</i> \u2014 and
         then leaves you alone. One per number in the party, a boxed Pok\u00e9mon only ever swaps
         with its own number, and you make that swap <b>whenever you feel like it</b>. No tour, no
         forced handover, no faint costs you anything (Rule 41).</div>
     </div>
-    <div class="modecard ${S.mode==='rotation'?'on':''}" ${locked?'':'onclick="setMode(\'rotation\')"'}>
+    <div class="modecard ${S.mode==='rotation'?'on':''}" onclick="setMode(\'rotation\')">
       <div class="mhead">\u{1F501} Rotation<span>${S.mode==='rotation'?'CURRENT':''}</span></div>
       <div class="mbody">Same numbers, but the die also decides <i>how long</i> anyone keeps their
         chair: every Pok\u00e9mon rolls a tour of duty and hands over when it runs out (Rule 26).
         A faint is still just a faint \u2014 nobody is ever lost \u2014 but your six change
         constantly whether you wanted them to or not.</div>
     </div>
-    <div class="modecard ${S.mode==='retire'?'on':''}" ${locked?'':'onclick="setMode(\'retire\')"'}>
+    <div class="modecard ${S.mode==='retire'?'on':''}" onclick="setMode(\'retire\')">
       <div class="mhead">\u26b0\ufe0f Retirement<span>${S.mode==='retire'?'CURRENT':''}</span></div>
       <div class="mbody">Rotation with teeth. A faint <i>during a Major Battle</i> <b>retires</b>
         that Pok\u00e9mon \u2014 still yours, still in the Box, never fields again. Faints anywhere
         else cost you nothing. A lineage can die out, but only at a wall you were already afraid
         of (Rule 40).</div>
     </div>
-    <div class="modecard ${S.mode==='permadeath'?'on':''}" ${locked?'':'onclick="setMode(\'permadeath\')"'}>
+    <div class="modecard ${S.mode==='permadeath'?'on':''}" onclick="setMode(\'permadeath\')">
       <div class="mhead">\u2620\ufe0f Permadeath<span>${S.mode==='permadeath'?'CURRENT':''}</span></div>
       <div class="mbody"><b>Any</b> faint is final, anywhere \u2014 a gym leader, a route trainer, a
         wild crit, poison on the way to a Centre. The Pok\u00e9mon is <b>Fallen</b> and its chair
@@ -1879,10 +1880,67 @@ function openModePicker(){
     <div class="acts"><button class="btn ghost" onclick="closeSheet()">${locked?'Close':'Cancel'}</button></div>`);
 }
 function setMode(m){
-  if (S.mons.length){ alert('This run has already started — the mode is locked (Rule 8).'); return; }
+  if (m === S.mode){ closeSheet(); return; }
+  // Before the first catch this is just setup. After it, it is a change to a run in progress, so
+  // say what it does and what it cannot undo (Rule 8).
+  if (S.mons.length) return confirmModeSwitch(m);
   S.mode = m;
-  logIt(MODEICON[m] || '🔁', `Mode set to <b>${esc(modeName())}</b>.`);
+  logIt(MODEICON[m] || '\u{1F501}', `Mode set to <b>${esc(modeName())}</b>.`);
   save(); render(); closeSheet();
+}
+// What actually changes, given where the run is. Only the true statements are shown — there is no
+// point warning about the Fallen in a run that never had any.
+function modeSwitchNotes(to){
+  const from = S.mode, out = [];
+  const wasTours = (from === 'rotation' || from === 'retire');
+  const nowTours = (to === 'rotation' || to === 'retire');
+  if (fallen().length)
+    out.push(`The <b>${fallen().length} Fallen</b> stay fallen. That happened, and changing mode
+      now doesn't bring anybody back.`);
+  if (retiredList().length)
+    out.push(`The <b>${retiredList().length} Retired</b> stay retired, for the same reason.`);
+  if (!nowTours && wasTours)
+    out.push('Tours stop mattering: nobody counts down and nobody is ever handed a discharge again.');
+  if (nowTours && !wasTours){
+    const need = party().filter(m => m.term == null).length;
+    out.push(`Tours start: ${need ? '<b>' + need + '</b> Pokémon in a chair will roll one' : 'everyone in a chair rolls one'} (Rule 26).`);
+  }
+  if (to === 'permadeath')
+    out.push('From here <b>any</b> faint anywhere is final (Rule 10). Faints before now are not counted retroactively \u2014 the tracker was never told about them.');
+  if (to === 'retire')
+    out.push('From here a faint <i>at a Major Battle</i> retires that Pokémon (Rule 40).');
+  if (to === 'rotation' || to === 'open')
+    out.push('From here a faint costs you nothing at all (Rule 27).');
+  return out;
+}
+function confirmModeSwitch(to){
+  const notes = modeSwitchNotes(to);
+  sheet(`<h3>Change mode mid-run?</h3>
+    <p class="note" style="margin:0 0 10px">This run has already started. Rule 8 asks you to
+      choose a mode up front and hold it \u2014 switching because a wall went badly is how a
+      challenge run stops being one. The tracker will still do it, and will write it in the log so
+      the run's history says what it was played under.</p>
+    <div style="display:flex;gap:10px;align-items:center;margin:12px 0;justify-content:center">
+      <b style="font-size:15px">${esc(modeName())}</b>
+      <span style="color:var(--dim);font-size:18px">\u2192</span>
+      <b style="font-size:15px;color:var(--gold)">${esc(MODENAME[to] || to)}</b>
+    </div>
+    ${notes.length ? '<ul class="note" style="margin:0 0 12px;padding-left:18px">' +
+      notes.map(x => '<li style="margin:4px 0">' + x + '</li>').join('') + '</ul>' : ''}
+    <div class="acts">
+      <button class="btn ghost" onclick="openModePicker()">\u2190 Keep ${esc(modeName())}</button>
+      <button class="btn" onclick="doModeSwitch('${to}')">Change it</button>
+    </div>`);
+}
+function doModeSwitch(to){
+  const was = modeName();
+  S.mode = to;
+  logIt(MODEICON[to] || '\u{1F501}', `Mode changed mid-run: <b>${esc(was)}</b> \u2192
+    <b>${esc(modeName())}</b>. What already happened stands.`);
+  // Leaving a tour mode strands spent terms; entering one leaves chairs owing a roll. Both are
+  // handled by the normal flow, so just let it run.
+  save(); render(); closeSheet();
+  if (needsTour().length) openTourRolls();
 }
 
 // A faint in Permadeath mode: the Pokémon is out of the run, and its chair passes down the lineage.
@@ -1953,8 +2011,9 @@ function openEncModePicker(){
       <div class="mbody">One catch per area — but <b>you choose which one</b>. Keep meeting
         Pokémon there until you meet the one you want, then catch it. Choice without abundance: it
         sits between First encounter and Catch 'em all, and it needs no bundled data, so it works
-        on any game. Throwing a ball is the commitment, so a failed catch still burns the area
-        (Rule 18). No dupes clause — a duplicate would be your own decision.</div>
+        on any game. You commit by <b>catching</b>, so nothing that flees or faints costs you
+        anything — this is the one rule where an area can't be burned (Rule 18). No dupes clause —
+        a duplicate would be your own decision.</div>
     </div>
     <div class="modecard ${S.encMode==='all'?'on':''}" ${locked?'':'onclick="setEncMode(\'all\')"'}>
       <div class="mhead">🌍 Catch 'em all<span>${S.encMode==='all'?'CURRENT':''}</span></div>
