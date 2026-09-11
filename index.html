@@ -2412,6 +2412,34 @@ function dischargeReason(m){
   if (overCap().some(x => x.id === m.id)) return `is over the cap (Lv ${esc(m.level)} > ${capNum()})`;
   return 'finished its tour';
 }
+// Stating what the count is, not rolling it again (Rule 31).
+function correctTour(id){
+  const m = mon(id);
+  if (!m) return;
+  sheet(`<h3>\u{1F4DC} ${esc(m.nick)}\u2019s tour</h3>
+    <p class="note" style="margin:0 0 10px">The tracker has <b>${m.term === 0 ? 'none' : m.term}</b>
+      left. How many Major Battles does it actually have? This states the count \u2014 it is not a
+      re-roll, and the die's verdict stands (Rule 31).</p>
+    <label for="tourIn">Majors left</label>
+    <input type="number" id="tourIn" min="0" max="20" inputmode="numeric" value="${esc(m.term)}">
+    <div class="acts">
+      <button class="btn ghost" onclick="closeSheet()">Cancel</button>
+      <button class="btn" onclick="saveTour(${id})">Save</button>
+    </div>`);
+  setTimeout(()=>{ const el = document.getElementById('tourIn'); if (el){ el.focus(); el.select(); } }, 120);
+}
+function saveTour(id){
+  const m = mon(id);
+  const v = parseInt((document.getElementById('tourIn') || {}).value, 10);
+  if (!m || !isFinite(v) || v < 0 || v > 20) return;
+  const was = m.term;
+  if (v === was){ closeSheet(); return; }
+  m.term = v;
+  logIt('\u{1F4DC}', `<b>${esc(m.nick)}</b>\u2019s tour corrected: ${was} \u2192 <b>${v}</b>
+    major${v === 1 ? '' : 's'} left.`);
+  save(); render(); closeSheet();
+}
+
 function rollTourFor(id){
   const m = mon(id);
   if (!m) { closeSheet(); render(); return; }
@@ -3985,8 +4013,12 @@ function openDetail(id){
         m.term === 0 ? '<span style="color:var(--gold)">up — hands over at the next PC</span>'
         : m.term == null ? '<span style="color:var(--dim)">not rolled yet</span>'
         : `<b>${m.term}</b> major${m.term===1?'':'s'} left`}
-        ${m.term == null ? `<button class="sw" style="margin-left:8px;padding:2px 10px"
-          onclick="closeSheet();rollTourFor(${id})">🎲 roll</button>` : ''}
+        ${m.term == null
+          ? `<button class="sw" style="margin-left:8px;padding:2px 10px"
+              onclick="closeSheet();rollTourFor(${id})">\u{1F3B2} roll</button>`
+          : `<button class="sw" style="margin-left:8px;padding:2px 10px"
+              title="Correct the count — this is not a re-roll"
+              onclick="correctTour(${id})">\u270E fix</button>`}
         </dd>` : ''}
       <dt>Status</dt><dd>${m.status==='party'
         ? '<span style="color:var(--green)">In party</span>'
