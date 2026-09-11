@@ -204,7 +204,7 @@ In ☠️ Permadeath a faint anywhere is final (Rule 10), and in 🔓 Open Linea
 
 - **A cap only ever rises, and never by less than one.** Plenty of walls are weaker than the one before them — a rival after a gym, Decay's Jupiter sitting a level under Brawly, Ultra Sun's Hau a full 25 levels under Mina. Two things follow.
 
-  First, **the cap can't drop.** A team that was legal five minutes ago would otherwise be illegal with no way to fix it, because you cannot un-level a Pokémon.
+  First, **the cap can't drop.** A team that was legal five minutes ago would otherwise be illegal with no way to fix it, because you cannot un-level a Pokémon. The tracker holds it as a high-water mark rather than recalculating it, so nothing that changes which wall is next — un-ticking a box you beat, correcting an ace, switching off a category — can take back an allowance you were already playing under.
 
   Second, **a weaker wall still pays out.** If the cap merely held, beating one of those would buy you literally nothing, and a run of them — Gold's six Kanto gyms, Sword's four Hop fights — would freeze the ceiling for hours while you kept clearing walls. So each wall's cap is **its own ace, or one above the last wall's cap, whichever is higher**. Sixty-five of the bundled majors sit at or under the cap already in force, so this is the normal case, not an edge case.
 

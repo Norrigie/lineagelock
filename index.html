@@ -1192,11 +1192,14 @@ function wallName(){
 // The cap in force. Always recomputed from the walls you have beaten, so changing a rule, a
 // correction or which categories count takes effect immediately instead of at the next wall.
 // S.cap is only the fallback, for a ROM hack whose numbers you typed in by hand.
+// The cap in force: the higher of what the ladder says you have earned and what you have already
+// been playing to. Recomputing keeps it fresh when a rule or a correction changes; keeping the
+// stored figure as a floor keeps Rule 29's promise that a cap never drops.
 function capNum(){
   const k = knownAce();
-  if (k) return k;
   const n = parseInt(S.cap, 10);
-  return isFinite(n) && n > 0 ? n : null;
+  const stored = isFinite(n) && n > 0 ? n : 0;
+  return Math.max(k || 0, stored) || null;
 }
 // Ace levels ship with most games (scraped from Serebii); Decay's come from its dev sheet.
 // The ace level of one battle, honouring a correction you have made for that wall.
@@ -1253,16 +1256,32 @@ function capThrough(upto){
   }
   return cap || null;
 }
+// The cap in force. Built from every wall you have beaten — wherever it sits in the list, so
+// un-ticking an earlier box can't take away what a later one earned — plus the wall in front of
+// you, whose ace you are allowed to match before you fight it (Rule 29).
 function knownAce(){
+  const list = battleList();
   const nx = nextMajor();
-  if (!nx) return null;
   const g = gauntlet();
-  return capThrough(g ? g.z : nx.i);
+  const upto = g ? g.z : (nx ? nx.i : list.length - 1);
+  let cap = 0;
+  for (let i = 0; i < list.length; ){
+    const c = chainAt(i);
+    const end = c ? c[1] : i;
+    let beaten = false;
+    for (let j = i; j <= end; j++) if (S.beat[j]) beaten = true;
+    if (beaten || i <= upto){
+      const ace = aceAt(i);
+      if (ace) cap = cap ? Math.max(ace, cap + 1) : ace;
+    }
+    i = end + 1;
+  }
+  return cap || null;
 }
 function syncCap(){
-  const a = knownAce();
-  if (!S.levelCap || !a) return false;
-  if (String(S.cap) === String(a)) return false;
+  if (!S.levelCap) return false;
+  const a = capNum();                       // already the high-water mark
+  if (!a || String(S.cap) === String(a)) return false;
   S.cap = String(a);
   return true;
 }
