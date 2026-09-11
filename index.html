@@ -109,6 +109,7 @@
     border-radius:20px;padding:2px 7px}
   /* Type badges, matching pokemondb.net: squared 4px corners, uppercase, white text
      with a soft drop shadow so the lighter types stay readable. */
+  .peek{color:var(--dim);font-weight:700;margin-left:6px;font-size:13px}
   .types{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
   /* beside a battle's name rather than under a portrait: inline, small, no top margin */
   .nname .types, .bname .types{display:inline-flex;margin:0 0 0 7px;vertical-align:middle}
@@ -2922,11 +2923,13 @@ function areaRows(shown, catches){
     const ms = areaMethods(a);
     const got = catches[a];
     const tick = st==='caught' ? '✓' : st==='burned' ? '🔥' : '';
-    return `<div class="bat ${st==='caught'?'done':''} ${st==='burned'?'burned':''}"
-        onclick="cycleArea('${a.replace(/'/g,"\\'")}')">
-      <div class="tick">${tick}</div>
-      <div class="binfo">
-        <div class="bname">${esc(a)}</div>
+    const q = a.replace(/'/g,"\\'");
+    const listable = ms.length > 0;
+    return `<div class="bat ${st==='caught'?'done':''} ${st==='burned'?'burned':''}"${
+        listable ? '' : ` onclick="cycleArea('${q}')"`}>
+      <div class="tick"${listable ? ` onclick="event.stopPropagation();cycleArea('${q}')"` : ''}>${tick}</div>
+      <div class="binfo"${listable ? ` onclick="event.stopPropagation();openAreaSpecies('${q}')"` : ''}>
+        <div class="bname">${esc(a)}${listable ? '<span class="peek">\u203a</span>' : ''}</div>
         <div class="bmeta">${isAll() && areaSpecies(a)
           ? (()=>{ const p = areaSpecies(a);
               return `<b style="color:${p.got>=p.total?'var(--green)':'var(--gold)'}">${p.got}/${p.total}</b> species caught`; })()
@@ -2945,6 +2948,59 @@ function areaRows(shown, catches){
     </div>`;
   }).join('');
 }
+// Everything that lives in one area, by method, with the odds the game gives it. Species you
+// already own are marked, because under Catch 'em All that is the whole question and under the
+// other rules it is still the first thing you look for.
+function openAreaSpecies(a){
+  const tb = hasEncData() ? encTables()[a] : null;
+  if (!tb) return;
+  const owned = new Set(S.mons.map(m => norm(m.species)));
+  const catches = areaCatches();
+  const st = areaState(a, catches);
+  const got = catches[a];
+  const locked = S.mlock && S.methods[a];
+  let body = '';
+  for (const m of Object.keys(tb)){
+    const rows = tb[m] || [];
+    if (!rows.length) continue;
+    const dim = locked && S.methods[a] !== m;
+    body += `<div class="grouphead" style="margin:14px 0 6px${dim ? ';opacity:.45' : ''}">
+        <div class="pill" style="min-width:auto;padding:0 8px">${METHODS[m] ? METHODS[m][1] : '?'}</div>
+        <span>${esc(METHODS[m] ? METHODS[m][0] : m)}${dim ? ' \u2014 not your locked method (Rule 34)' : ''}</span>
+      </div>`;
+    body += rows.map(([sp, rate]) => {
+      const name = slotName(sp);
+      const have = owned.has(norm(name));
+      return `<div class="row" style="padding:7px 11px${dim ? ';opacity:.45' : ''}">
+        <div class="info" style="cursor:default">
+          <div class="nick" style="font-size:14px">${esc(pretty(name))}${have
+            ? ' <span style="color:var(--green);font-size:11px;font-weight:800">OWNED</span>' : ''}</div>
+          ${typeBadges(typesOf(name))}
+        </div>
+        <div class="kind" style="color:var(--dim);border-color:var(--line)">${rate}%</div>
+      </div>`;
+    }).join('');
+  }
+  const total = new Set(Object.keys(tb).flatMap(m => (tb[m] || []).map(([sp]) => norm(slotName(sp))))).size;
+  const mine = [...new Set(Object.keys(tb).flatMap(m => (tb[m] || []).map(([sp]) => norm(slotName(sp)))))]
+    .filter(x => owned.has(x)).length;
+  sheet(`<h3>\u{1F4CD} ${esc(a)}</h3>
+    <p class="note" style="margin:0 0 4px">${total} species live here${
+      mine ? `, and you own <b style="color:var(--green)">${mine}</b> of them` : ''}. Percentages are
+      the game's own appearance rates.</p>
+    <p class="note" style="margin:0 0 6px">${
+      st === 'caught' ? `<b style="color:var(--gold)">Spent</b>${got ? ' \u2014 you caught ' +
+        got.map(m => esc(m.nick)).join(', ') + ' here' : ''}.`
+      : st === 'burned' ? '<b style="color:var(--red)">Burned</b> — no catch here.'
+      : isAll() ? 'Catch everything you don\'t already own (Rule 15).'
+      : oneEach() ? 'Still open — one catch here, and it is yours to choose (Rule 15).'
+      : 'Still open.'}</p>
+    ${body}
+    <div class="acts" style="margin-top:14px">
+      <button class="btn ghost" onclick="closeSheet()">Close</button>
+    </div>`);
+}
+
 // Rule 34: the die decides how you're allowed to look in an area, not just what you find.
 function rollMethod(a){
   const ms = areaMethods(a);
