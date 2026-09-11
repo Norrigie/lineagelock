@@ -537,7 +537,7 @@ const PRESETS = [
    { mode:'retire', encMode:'first', majors:EVERYTHING, levelCap:true, succession:'choose',
      tourDie:6, blood:false, mlock:false, shinyClause:true, starter:'full' }],
   ['dynasty', '🧬', 'Dynasty',
-   'Six houses that can genuinely die out. Each lineage locks to its founder\'s type, three encounters per area to choose from, long tours, and a faint at a wall retires that Pokémon for good — so a dynasty losing its last heir is over.',
+   'Six houses that can genuinely die out. Each lineage locks to its founder\'s type, your pick of one Pok\u00e9mon per area, long tours, and a faint at a wall retires that Pokémon for good — so a dynasty losing its last heir is over.',
    { mode:'retire', encMode:'audition', majors:EVERYTHING, levelCap:true, succession:'choose',
      tourDie:8, blood:true, mlock:false, shinyClause:true, starter:'full' }],
   ['nuzlocke', '☠️', 'Classic Nuzlocke',
@@ -1950,10 +1950,11 @@ function openEncModePicker(){
     </div>
     <div class="modecard ${S.encMode==='audition'?'on':''}" ${locked?'':'onclick="setEncMode(\'audition\')"'}>
       <div class="mhead">🎬 Audition<span>${S.encMode==='audition'?'CURRENT':''}</span></div>
-      <div class="mbody">Three encounters per area, and you catch whichever of the three you like —
-        still only one catch there, ever. Choice without abundance: it sits between First encounter
-        and Catch 'em all, and it needs no bundled data, so it works on any game. No dupes clause —
-        you already had a choice.</div>
+      <div class="mbody">One catch per area — but <b>you choose which one</b>. Keep meeting
+        Pokémon there until you meet the one you want, then catch it. Choice without abundance: it
+        sits between First encounter and Catch 'em all, and it needs no bundled data, so it works
+        on any game. Throwing a ball is the commitment, so a failed catch still burns the area
+        (Rule 18). No dupes clause — a duplicate would be your own decision.</div>
     </div>
     <div class="modecard ${S.encMode==='all'?'on':''}" ${locked?'':'onclick="setEncMode(\'all\')"'}>
       <div class="mhead">🌍 Catch 'em all<span>${S.encMode==='all'?'CURRENT':''}</span></div>
