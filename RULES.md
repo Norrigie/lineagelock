@@ -295,7 +295,10 @@ If you're playing a ROM hack or a fan game and it marches you through two majors
 | 👥 **Rival battles** | every story fight with your rival | the biggest single group — 134 across the games |
 | 🦹 **Villain-team bosses** | Rocket, Galactic, Plasma, Flare and the rest | |
 | 👑 **Elite Four & Champion** | the league | off makes the run end at the last gym |
+| 🎲 **Optional challenges** | fights you are invited to and may decline | off by default |
 | 🌙 **Post-game** | rematches and anything after the credits | off by default |
+
+**Optional challenges** are the ones the game asks you about rather than forcing on you — Decay's Captain Drake (*“Would you like to fight against us?”*) and Strategist Noland (*“How about a real test?”*) both offer a plain Yes or No, and you can decline and still finish the game. Rule 25 counts the walls a game builds up to, and a fight you can walk away from is not one — but it is still a real boss, so it stays on the checklist for anyone who wants the credit.
 
 Only the categories your game actually has are offered — Alola shows no Gyms row, Kanto shows no Titans row.
 
