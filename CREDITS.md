@@ -10,6 +10,7 @@ this file records where each piece came from and under what terms.
 | Nickname theme pools (18 themes) | [Behind the Name](https://www.behindthename.com) | **CC BY-SA 4.0** — see note below |
 | Encounter tables, species list, abilities, types | [PokéAPI](https://pokeapi.co/) | Free to use; attribution requested |
 | Evolution methods (mainline) | [PokéAPI](https://pokeapi.co/), gated by generation | Factual game data |
+| Which regional form an evolution method belongs to | [Bulbapedia](https://bulbapedia.bulbagarden.net/) raw wikitext | **CC BY-NC-SA 2.5** — facts only, no text reproduced |
 | Evolution methods (fan games) | Each game's own `PBS` files | Factual game data |
 | Historical (per-generation) typings | [PokéAPI](https://pokeapi.co/), verified against [Serebii](https://www.serebii.net/) | Factual game data |
 | Ace levels for 465 major battles | [Serebii](https://www.serebii.net/), [Bulbapedia](https://bulbapedia.bulbagarden.net/), [Nuzlocke University](https://nuzlockeuniversity.ca/), [Game8](https://game8.co/) | Factual game data, cross-checked between sources |
