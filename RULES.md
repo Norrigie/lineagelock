@@ -308,6 +308,8 @@ If you're playing a ROM hack or a fan game and it marches you through two majors
 
 **Optional challenges** are the ones the game asks you about rather than forcing on you — Decay's Captain Drake (*“Would you like to fight against us?”*) and Strategist Noland (*“How about a real test?”*) both offer a plain Yes or No, and you can decline and still finish the game. Rule 25 counts the walls a game builds up to, and a fight you can walk away from is not one — but it is still a real boss, so it stays on the checklist for anyone who wants the credit.
 
+The category also holds fights that are **one side of a story choice**. Decay's Zinnia attacks only if you hand the Claw Totem to the Seviper faction (*“How can you be on the side of this scheming snake? No matter, you have chosen your side!”*), and Pike Queen Lucy only if you side the other way (*“I didn’t expect you to be such a sneaky traitor”*). Both are pitched at exactly Lv 44, the way Decay pitches its either/or heist at Lv 26 for both Lt. Surge and Koga — so whichever way you go, one of them is a wall you never meet, and neither belongs on a checklist of walls everyone faces.
+
 Only the categories your game actually has are offered — Alola shows no Gyms row, Kanto shows no Titans row.
 
 **What switching one off does.** That category stops being a Major Battle for every rule that cares: tours don't tick for it (Rule 26), it doesn't move the level cap (Rule 29), a faint in it doesn't end anyone's duty (Rule 27), and it isn't part of a no-PC chain (Rule 37). The battles are still listed and still tickable, marked *not counted this run*, so you can keep track of where you are without them driving the ruleset.
