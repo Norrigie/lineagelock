@@ -550,7 +550,7 @@ Still uncovered: **Let's Go, Sword · Shield, Legends: Arceus and Scarlet · Vio
 
 A few of Decay's places **share a display name without being the same place**, and those are split rather than folded. Six maps call themselves *Mountain Pass*: one is an early cave of Geodude and Zubat, the other the stretch of Graveler and Lairon that leads on toward Glacier Cave, so the second is listed as **Mountain Pass (Covey Ridge side)**. The Safari Zone is four areas with four different tables, and Route 3 has a cave that shares its name. Sub-areas of one place still fold, which is why Iron Cave's six floors and Taunwick Peaks' eight maps are each a single row.
 
-**Pokémon Xenoverse** ships too, and it was built from the game's own files rather than a spreadsheet, so it is the more complete of the two: **859 species with their typings**, 390 evolution chains, **53 areas with real rate-weighted encounter tables**, and **24 major battles** in story order with their locations and ace levels. The aces come from the game's compiled trainer data, so each is the highest level on the real team.
+**Pokémon Xenoverse** ships too, and it was built from the game's own files rather than a spreadsheet, so it is the more complete of the two: **867 species with their typings**, 397 evolution chains, **53 areas with real rate-weighted encounter tables**, and **24 major battles** in story order with their locations and ace levels. The aces come from the game's compiled trainer data, so each is the highest level on the real team.
 
 Three things about it are worth knowing before you start a run:
 

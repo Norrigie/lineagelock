@@ -62,14 +62,26 @@ mons = mons.filter(m => m.InternalName && !seen.has(m.InternalName) && seen.add(
 
 const internals = new Set(mons.map(m => m.InternalName));
 const NAMEFIX = { NIDORANfE: 'Nidoran♀', NIDORANmA: 'Nidoran♂' };
+const NPC_COPY = new Set(['BLASTOISESILVIA']);      // "Buster", Silvia's story Blastoise
+const byInternal = new Map(mons.map(m => [m.InternalName, m]));
+const nameOf = m => NAMEFIX[m.InternalName] || pretty(m.Name || '');
 const label = m => {
+  if (NPC_COPY.has(m.InternalName)) return null;
   let base = null;
   for (const c of internals)
     if (c !== m.InternalName && m.InternalName.startsWith(c) && (!base || c.length > base.length)) base = c;
-  const suffix = base ? m.InternalName.slice(base.length) : '';
-  if (base && suffix !== 'X' && suffix !== 'ELDIW') return null;    // not a catchable form
-  const nm = NAMEFIX[m.InternalName] || pretty(m.Name || '');
+  let suffix = base ? m.InternalName.slice(base.length) : '';
+  const nm = nameOf(m);
   if (!nm || nm === '???') return null;
+  if (base && suffix !== 'X' && suffix !== 'ELDIW'){
+    // Starting with another species' internal name does not make you its form: a form wears the
+    // base's name (PIKACHUVINTAGE reads "Pikachu"), while PIDGEOTTO, KABUTOPS, MEWTWO, PORYGON2
+    // and KLINKLANG are species of their own that merely begin with PIDGEOT, KABUTO, MEW,
+    // PORYGON and KLINK.
+    const bm = byInternal.get(base);
+    if (bm && nameOf(bm) === nm) return null;                       // not a catchable form
+    base = null; suffix = '';
+  }
   return nm + (suffix === 'X' ? ' X' : suffix === 'ELDIW' ? ' (Eldiw)' : '');
 };
 
