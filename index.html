@@ -2361,7 +2361,9 @@ function viewBattles(){
         <div class="binfo">
           <div class="bname">${esc(b[0])}${typeBadges(battleTypes(b))}</div>
           <div class="bmeta">${esc(battleNote(b))}${b[2]?`${battleNote(b)?' · ':''}📍 ${esc(b[2])}`:''}${
-          b[4] && !out ?` · <b style="color:var(--gold)">Ace Level ${b[4]}</b>`:''}${
+          /* A wall off the list still shows its ace. It sets no cap — that is what "not counted"
+             means — but it is what you walk into if you keep playing, so hiding it helps nobody. */
+          b[4] ?` · <b style="color:var(${out?'--dim':'--gold'})">Ace Level ${b[4]}</b>`:''}${
           out ? ' · <i>not counted this run</i>' : ''}</div>
         </div>
         <div class="kind" style="color:${col};border-color:${col}33">${label}</div>
